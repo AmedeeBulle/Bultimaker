@@ -106,6 +106,9 @@ switch ($data['cmd']) {
     if ($data['displayFan'] == 1) {
       $cmd .= ' DISPLAY_FAN';
     }
+    if ($data['actionCommand'] == 1) {
+      $cmd .= ' ACTION_COMMAND';
+    }
     if ($data['pulleys'] == 1) {
       $cmd .= ' ULTIMAKER_GT2';
     }

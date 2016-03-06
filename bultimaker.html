@@ -84,7 +84,12 @@
                                  ng-false-value="0"> Reverse encoder</label>
         <p class="help-block">Some displays have the rotary knob inverted. Use this option to get it right.</p>
       </div>
-
+      <div class="checkbox">
+        <label><input type="checkbox" ng-model="params.actionCommand"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Implement <code>//action:command</code> protocol.</label>
+        <p class="help-block">If you are using <a href="http://octoprint.org/">OctoPrint</a> or <a href="http://www.pronterface.com/">Pronterface</a> it will allows you to Pause/Resume prints from your controller. See <a href="http://reprap.org/wiki/Gcode#Replies_from_the_RepRap_machine_to_the_host_computer">here</a> for more information.</p>
+      </div>
       <div class="form-group">
         <label>Controller language</label>
         <select class="form-control" ng-model="params.language" ng-options="lov.key as lov.descr for lov in lovLanguage"></select>

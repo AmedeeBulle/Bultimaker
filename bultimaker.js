@@ -55,6 +55,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       tempBed:        0,              // No heated bed
       controller:     'Ulti',         // Ulticontroller
       displayFan:     0,              // Display Fan% on Ulticontroller
+      actionCommand:  0,              // Action:command implementation
       baudrate:       250000,         // Default baud rate
       invertX:        1,              // Default axis direction on UMO
       invertY:        0,

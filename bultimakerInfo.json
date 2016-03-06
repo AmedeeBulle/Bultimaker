@@ -1,0 +1,12 @@
+{
+  "status": 0,
+  "log": "",
+  "url": "https://github.com/AmedeeBulle/Marlin",
+  "branch": "Marlin_UMO_Unified",
+  "hash": "46ab51849f2b1ca88aa6efda78eb3572b04a6cd7",
+  "shortHash": "46ab51849f",
+  "authorDate": "13 days ago",
+  "subject": "Remap Marlin special characters to unused area in order to keep all special chars.",
+  "experimental": 1,
+  "tag": "15.01-RC2"
+}

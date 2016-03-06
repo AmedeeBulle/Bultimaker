@@ -1,0 +1,32 @@
+/**
+ * bultimaker.css
+ * Small CSS tweaks
+ */
+
+/* Allow PRE to wrap */
+.pre-wrap {
+  word-break: normal;
+  white-space: pre-wrap;
+  margin: 5px;
+}
+
+/* Spinner classes */
+.spinner {
+  display: inline-block;
+  opacity: 0;
+  width: 0;
+
+  -webkit-transition: opacity 0.25s, width 0.25s;
+  -moz-transition: opacity 0.25s, width 0.25s;
+  -o-transition: opacity 0.25s, width 0.25s;
+  transition: opacity 0.25s, width 0.25s;
+}
+
+.has-spinner.active {
+  cursor:progress;
+}
+
+.has-spinner.active .spinner {
+  opacity: 1;
+  width: 40px;
+}

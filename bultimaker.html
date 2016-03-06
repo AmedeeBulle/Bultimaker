@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Marlin Ultimaker Generator</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+    <script src="bultimaker.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <!-- Font awesome for the spinner -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <!-- CSS tweaks -->
+    <link rel="stylesheet" href="bultimaker.css">
+  </head>
+  <body ng-app="bultimakerApp">
+    <div class="container-fluid bg-primary">
+      <h1>Bul<small class="bg-primary">le</small>timaker: Build Ultimaker firmware</h1>
+      <p>Online firmware compiler for your Ultimaker Original printer</p>
+    </div>
+    
+    <div ng-controller="bultimakerCtrl" class="container">
+      <div class="container-fluid bg-danger" ng-show="info.experimental === 1">
+        <h2>Warning: experimental branch!</h2>
+      </div>
+      <h2>Basic configuration</h2>
+      <p class="text-primary">Selecting a printer here will generate a default Ultimaker Firmware for this printer (as distributed with Cura)</p>
+      <div class="form-group">
+        <label>Printer selection</label>
+        <select class="form-control" ng-model="umSelect"
+                ng-change="umSelected()"
+                ng-options="profile as profile.label for profile in profiles">
+        </select>
+        <div class="help-block">Notes
+          <ul>
+            <li>Selecting a printer will (re-)set all fields in te next sections to their default value</li>
+            <li>An "{{profiles[1].label}}" and an "{{profiles[2].label}}" are different printers -- they do <strong>not</strong> have the same motherboard!</li>
+            <li>The "{{profiles[1].label}}" selection is for the <em>official</em> Ultimaker heated bed kit only.
+              For a self-built heated bed, select "{{profiles[0].label}}" and specify your heated bed sensor type in the <em>Expert</em> section.
+            </li>
+          </ul>
+        </div>
+      </div>
+      <h2>Extra configuration</h2>
+      <p class="text-info">Changing something in this section will generate alternative Ultimaker Firmware for your {{umSelect.label}} (as distributed with Cura)</p>
+      <div class="checkbox">
+        <label><input type="checkbox" ng-model="params.extruders"
+                                 ng-true-value="2"
+                                 ng-false-value="1"> Dual extrusion</label>
+        <p class="help-block">This is for the <em>experimental</em> dual extrusion kit as sold by Ultimaker</p>
+      </div>
+      <div class="form-group">
+        <label>Baud rate</label>
+        <select class="form-control" ng-model="params.baudrate" ng-options="lov.key as lov.descr for lov in lovBaudrate"></select>
+        <p class="help-block">115200 is provided for historical reasons, use only if your host software cannot do 250000.</p>
+      </div>
+      <h2>Expert configuration</h2>
+      <p class="text-danger">Changing something in this section will generate a Custom Firmware.<br />
+        This firmware may not run on your {{umSelect.label}} if you select a wrong hardware component!</p>
+      <div class="form-group">
+        <label>Controller</label>
+        <select class="form-control" ng-model="params.controller" ng-options="lov.key as lov.descr for lov in lovController"></select>
+      </div>
+      <div class="checkbox" ng-show="params.controller == 'Ulti'">
+        <label><input type="checkbox" ng-model="params.displayFan"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Display fan percentage</label>
+        <p class="help-block">Display the fan percentage at the end of the status line. Selecting this will truncate any message on the status line to 14 characters.</p>
+      </div>
+      <div class="form-group" ng-show="params.controller == 'Ulti'">
+        <label>Controller beep sound</label>
+        <select class="form-control" ng-model="params.beep" ng-options="lov.key as lov.descr for lov in lovBeep"></select>
+        <p class="help-block">Whatever you prefer! The Marlin beep sound is higher and shorter than the Ulticontroller default one. Undecided? Look at this <a href="https://www.youtube.com/watch?v=BQvZipUXVJk">short video</a>!</p>
+      </div>
+      <div class="checkbox" ng-show="params.controller == 'FGSC'">
+        <label><input type="checkbox" ng-model="params.reverseEncoder"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Reverse encoder</label>
+        <p class="help-block">Some displays have the rotary knob inverted. Use this option to get it right.</p>
+      </div>
+
+      <div class="form-group">
+        <label>Controller language</label>
+        <select class="form-control" ng-model="params.language" ng-options="lov.key as lov.descr for lov in lovLanguage"></select>
+      </div>      
+      <div class="form-group">
+        <label>Display timeout</label>
+        <select class="form-control" ng-model="params.timeout" ng-options="lov.key as lov.descr for lov in lovTimeout"></select>
+        <p class="help-block">Delay before returning to status page when idle in menus</p>
+      </div>      
+      <div class="form-group">
+        <label>Temperature sensor for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
+        <select class="form-control" ng-model="params.temp0" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
+      </div>
+      <div class="form-group">
+        <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
+        <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
+        <select class="form-control" ng-model="params.maxtemp0" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+      </div>
+      <div class="form-group" ng-show="params.extruders == 2">
+        <label>Temperature sensor for the <strong>second</strong> hot-end</label>
+        <select class="form-control" ng-model="params.temp1" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
+      </div>
+      <div class="form-group" ng-show="params.extruders == 2">
+        <label>Maximum temperature for the <strong>second</strong> hot-end</label>
+        <select class="form-control" ng-model="params.maxtemp1" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+      </div>
+      <div class="form-group">
+        <label>Temperature sensor for the heated bed (if any)</label>
+        <select class="form-control" ng-model="params.tempBed" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
+      </div>   
+      <div class="form-group">
+        <label>Motors</label>
+        <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
+        (Note that inverted X axis is the default configuration on Ultimaker Original!)</p>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertX"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert X axis direction</label>
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertY"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert Y axis direction</label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Pulleys</label>
+        <select class="form-control" ng-model="params.pulleys" ng-options="lov.key as lov.descr for lov in lovPulleys"></select>
+        <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
+      </div>      
+
+      <h2>Build Firmware</h2>
+      <div class="row">
+        <div class="col-sm-6">
+          <h3>Firmware source information</h3>
+          <div class="bg-warning" ng-show="infoError">
+            <h4>Communication error</h4>
+            <p>{{infoError}}</p>
+            <p>The build will most probably fail...</p>
+          </div>
+          <div class="bg-info" ng-show="info.status === 0">
+            <p>Repository: <a ng-href="{{info.url}}">{{info.repo}}</a><br/>
+              Branch: <a ng-href="{{info.url}}/tree/{{info.branch}}">{{info.branch}}</a><br/>
+              Last tag: {{info.tag}}<br/>
+              Last commit: <a ng-href="{{info.url}}/commit/{{info.hash}}">{{info.shortHash}}</a> authored {{info.authorDate}}:<br/>
+            </p>
+            <pre class="pre-wrap">{{info.subject}}</pre>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <h3>Build!</h3>
+          <div>
+          <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
+            <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
+          <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
+          </div>
+          <div class="bg-info" ng-show="buildMd5">
+            <h4>Build completed</h4>
+            Firmware MD5 hash: {{buildMd5}}
+          </div>
+          <div class="bg-danger" ng-show="compileError">
+            <h4>Build error</h4>
+            <p>Something went wrong during compilation.<br/>
+              Review the logfile and try again later...</p>
+          </div>
+          <div class="bg-danger" ng-show="httpError">
+            <h4>Communication error</h4>
+            <p>Something went wrong when communicating with the server.<br/>
+              <span ng-show="httpErrorStatus">Error status: {{httpErrorStatus}}<br /></span>
+              <span ng-show="httpErrorData">Error message: {{httpErrorData}}<br /></span>
+              Please try again later...</p>
+          </div>
+        </div>
+      </div>
+      <div class="bg-info" ng-show="buildLog">
+        <h3>Build log</h3>
+        <pre class="pre-scrollable"><code>{{buildLog}}</code></pre>
+      </div>
+    </div>
+  </body>
+</html>

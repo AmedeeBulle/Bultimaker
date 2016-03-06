@@ -1,0 +1,13 @@
+<?php
+//
+//  Bul(le)timaker
+//
+//  Build Ultimaker firmware
+//  Site config
+//
+
+define("MARLIN"         , "/path/to/marlin/sources"); // Location of the firmare sources
+define("ARDUINO_PATH"   , "/path/to/arduino");        // Arduino location & Version
+define("ARDUINO_VERSION", "106");
+
+?>

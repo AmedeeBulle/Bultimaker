@@ -123,7 +123,7 @@
       <div class="form-group">
         <label>Motors</label>
         <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
-        (Note that inverted X axis is the default configuration on Ultimaker Original!)</p>
+        (Note that inverted X and Z axis is the default configuration on Ultimaker Original!)</p>
         <div class="checkbox">
           <label><input type="checkbox" ng-model="params.invertX"
                                  ng-true-value="1"
@@ -133,6 +133,21 @@
           <label><input type="checkbox" ng-model="params.invertY"
                                  ng-true-value="1"
                                  ng-false-value="0"> Invert Y axis direction</label>
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertZ"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert Z axis direction</label>
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertE0"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert first Extruder (0) direction</label>
+        </div>
+        <div class="checkbox" ng-show="params.extruders == 2">
+          <label><input type="checkbox" ng-model="params.invertE1"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert second Extruder (1) direction</label>
         </div>
       </div>
       <div class="form-group">

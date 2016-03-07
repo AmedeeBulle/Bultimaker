@@ -92,6 +92,9 @@ switch ($data['cmd']) {
       ' HEATER_1_MAXTEMP='    . $data['maxtemp1'] .
       ' INVERT_X_DIR='        . ($data['invertX'] == 0 ? 'false' : 'true') .
       ' INVERT_Y_DIR='        . ($data['invertY'] == 0 ? 'false' : 'true') .
+      ' INVERT_Z_DIR='        . ($data['invertZ'] == 0 ? 'false' : 'true') .
+      ' INVERT_E0_DIR='       . ($data['invertE0'] == 0 ? 'false' : 'true') .
+      ' INVERT_E1_DIR='       . ($data['invertE1'] == 0 ? 'false' : 'true') .
       ' LANGUAGE_CHOICE='     . $data['language']
       ;
     if ($data['target'] == 'HBK') {

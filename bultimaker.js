@@ -59,6 +59,9 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       baudrate:       250000,         // Default baud rate
       invertX:        1,              // Default axis direction on UMO
       invertY:        0,
+      invertZ:        1,
+      invertE0:       0,
+      invertE1:       0,
       language:       1,              // Interface language -- English
       timeout:        15000,          // Display timeout
       pulleys:        0,              // 0: MXL, 1: GT2

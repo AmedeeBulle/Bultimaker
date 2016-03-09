@@ -42,7 +42,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           motherboard:  72,         // UMOP has UM2 board
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
-          tempBed:      20          // Heated bed si PT100
+          tempBed:      20,         // Heated bed si PT100
+          frsPin:       26          // Pin for the sensor
         }
       }
     ],
@@ -68,7 +69,11 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       maxtemp0:       275,            // Max temp for extruder 0
       maxtemp1:       275,            // Max temp for extruder 1
       beep:           'Ulti',         // Beep type. Ultimaker traditional or Marlin original
-      reverseEncoder: 0               // To fix the rotary knob
+      reverseEncoder: 0,              // To fix the rotary knob
+      filRunoutSensor: 0,             // Do we have a filament runout sensor?
+      frsPin:         17,             // Pin for the sensor
+      frsInvert:      1,              // Invert signal?
+      frsPullup:      1               // Configure the pin Pull-up
     };
 
   // Returns available profiles
@@ -166,6 +171,21 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 'Ulti',   descr: 'UltiController default'},
     { key: 'Marlin', descr: 'Marlin original'}
   ];
+  $scope.lovFrsPin = {
+    7: [              // Ultiboard 1.5.x
+      { key:  17,   descr: 'Exp3  8 - Pin 17'},
+      { key:  18,   descr: 'Exp3  9 - Pin 18'},
+      { key:  23,   descr: 'Exp3 10 - Pin 23'},
+      { key:  24,   descr: 'Exp3 11 - Pin 24'},
+      { key:  25,   descr: 'Exp3 12 - Pin 25'},
+      { key:  26,   descr: 'Exp3 13 - Pin 26'}
+    ],
+    72: [              // Ultiboard 2.x
+      { key:  26,   descr: 'Exp3 PB7 - Pin 26'},
+      { key:  50,   descr: 'Ext/IO PC7 - Pin 18'},
+      { key:  60,   descr: 'Ext/IO PD7 - Pin 23'}
+    ]
+  };
   
   // Buttons state and fields initialization
   $scope.disableCompile = false;

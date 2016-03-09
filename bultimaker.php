@@ -121,6 +121,15 @@ switch ($data['cmd']) {
     if ($data['reverseEncoder'] == 1) {
       $cmd .= ' REVERSE_ENCODER';
     }
+    if ($data['filRunoutSensor'] == 1) {
+      $cmd .= ' FILAMENT_RUNOUT_SENSOR FILRUNOUT_PIN=' . $data['frsPin'];
+    if ($data['frsInvert'] == 1) {
+        $cmd .= ' FIL_RUNOUT_INVERT';
+      }
+    if ($data['frsPullup'] == 1) {
+        $cmd .= ' ENDSTOPPULLUP_FIL_RUNOUT';
+      }
+    }
     // Close defines
     $cmd .= '" ';
 

@@ -155,7 +155,32 @@
         <select class="form-control" ng-model="params.pulleys" ng-options="lov.key as lov.descr for lov in lovPulleys"></select>
         <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
       </div>      
-
+      <div class="form-group">
+        <label>Filament runout sensor</label>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.filRunoutSensor"
+                                   ng-true-value="1"
+                                   ng-false-value="0"> Filament runout sensor</label>
+          <p class="help-block">Enable filament runout senseor. Additional hardware required! If you enable this and so not have a sensor you will not be able to print...</p>
+        </div>
+        <div ng-show="params.filRunoutSensor == 1">
+          <div class="form-group">
+            <label>Filament runout sensor pin</label>
+            <select class="form-control" ng-model="params.frsPin" ng-options="lov.key as lov.descr for lov in lovFrsPin[params.motherboard]"></select>
+            <p class="help-block">Pin used by the sensor</p>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="params.frsInvert"
+                                     ng-true-value="1"
+                                     ng-false-value="0"> Invert sensor pin signal</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="params.frsPullup"
+                                     ng-true-value="1"
+                                     ng-false-value="0"> Enable pull-up on the sensor pin</label>
+          </div>
+        </div>
+      </div>
       <h2>Build Firmware</h2>
       <div class="row">
         <div class="col-sm-6">

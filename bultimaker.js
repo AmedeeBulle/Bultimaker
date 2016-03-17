@@ -173,17 +173,17 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
   ];
   $scope.lovFrsPin = {
     7: [              // Ultiboard 1.5.x
-      { key:  17,   descr: 'Exp3  8 - Pin 17'},
-      { key:  18,   descr: 'Exp3  9 - Pin 18'},
-      { key:  23,   descr: 'Exp3 10 - Pin 23'},
-      { key:  24,   descr: 'Exp3 11 - Pin 24'},
-      { key:  25,   descr: 'Exp3 12 - Pin 25'},
-      { key:  26,   descr: 'Exp3 13 - Pin 26'}
+      { key:   8,   descr: 'Exp3  8 - ATmega pin 17 - Digital pin  8'},
+      { key:   9,   descr: 'Exp3  9 - ATmega pin 18 - Digital pin  9'},
+      { key:  10,   descr: 'Exp3 10 - ATmega pin 23 - Digital pin 10'},
+      { key:  11,   descr: 'Exp3 11 - ATmega pin 24 - Digital pin 11'},
+      { key:  12,   descr: 'Exp3 12 - ATmega pin 25 - Digital pin 12'},
+      { key:  13,   descr: 'Exp3 13 - ATmega pin 26 - Digital pin 13'}
     ],
     72: [              // Ultiboard 2.x
-      { key:  26,   descr: 'Exp3 PB7 - Pin 26'},
-      { key:  50,   descr: 'Ext/IO PC7 - Pin 18'},
-      { key:  60,   descr: 'Ext/IO PD7 - Pin 23'}
+      { key:  13,   descr: 'Exp3 PB7   - ATmega Pin 26 - Digital pin 13'},
+      { key:  30,   descr: 'Ext/IO PC7 - ATmega Pin 60 - Digital pin 30'},
+      { key:  38,   descr: 'Ext/IO PD7 - ATmega Pin 50 - Digital pin 38'}
     ]
   };
   

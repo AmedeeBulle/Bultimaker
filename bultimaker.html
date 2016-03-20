@@ -156,6 +156,11 @@
         <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
       </div>      
       <div class="form-group">
+        <label>Fan kickstart</label>
+        <select class="form-control" ng-model="params.fanKick" ng-options="lov.key as lov.descr for lov in lovFanKick"></select>
+        <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
+      </div>
+      <div class="form-group">
         <label>Filament runout sensor</label>
         <div class="checkbox">
           <label><input type="checkbox" ng-model="params.filRunoutSensor"

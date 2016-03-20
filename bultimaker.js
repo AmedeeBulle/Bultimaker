@@ -73,7 +73,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       filRunoutSensor: 0,             // Do we have a filament runout sensor?
       frsPin:         17,             // Pin for the sensor
       frsInvert:      1,              // Invert signal?
-      frsPullup:      1               // Configure the pin Pull-up
+      frsPullup:      1,              // Configure the pin Pull-up
+      fanKick:        0               // Fan kickstart time
     };
 
   // Returns available profiles
@@ -186,6 +187,13 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
       { key:  38,   descr: 'Ext/IO PD7 - ATmega Pin 50 - Digital pin 38'}
     ]
   };
+  $scope.lovFanKick = [
+    { key:   0,   descr: 'None (Default)'},
+    { key: 100,   descr: '100 ms'},
+    { key: 200,   descr: '200 ms'},
+    { key: 300,   descr: '300 ms'},
+    { key: 400,   descr: '400 ms'}
+  ];
   
   // Buttons state and fields initialization
   $scope.disableCompile = false;

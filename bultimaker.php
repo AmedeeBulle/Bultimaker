@@ -130,6 +130,9 @@ switch ($data['cmd']) {
         $cmd .= ' ENDSTOPPULLUP_FIL_RUNOUT';
       }
     }
+    if ($data['fanKick'] > 0) {
+      $cmd .= ' FAN_KICKSTART_TIME=' . $data['fanKick'];
+    }
     // Close defines
     $cmd .= '" ';
 

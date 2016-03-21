@@ -192,7 +192,8 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 100,   descr: '100 ms'},
     { key: 200,   descr: '200 ms'},
     { key: 300,   descr: '300 ms'},
-    { key: 400,   descr: '400 ms'}
+    { key: 400,   descr: '400 ms'},
+    { key: 500,   descr: '500 ms (Recommended)'}
   ];
   
   // Buttons state and fields initialization

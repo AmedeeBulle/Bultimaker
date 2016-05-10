@@ -32,7 +32,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
         label: 'Ultimaker Original with HBK',
         buildParams: {
           target:       'HBK',
-          tempBed:      20        // Heated bed si PT100
+          tempBed:      20        // Heated bed is PT100
         }
       },
       {
@@ -42,7 +42,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           motherboard:  72,         // UMOP has UM2 board
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
-          tempBed:      20,         // Heated bed si PT100
+          tempBed:      20,         // Heated bed is PT100
           frsPin:       26          // Pin for the sensor
         }
       }
@@ -54,6 +54,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       temp0:          -1,             // Extruder is thermocouple
       temp1:          -1,             // 2nd extruder if any is thermocouple
       tempBed:        0,              // No heated bed
+      pidBed:         0,              // No PID control for heated bed
       controller:     'Ulti',         // Ulticontroller
       displayFan:     0,              // Display Fan% on Ulticontroller
       actionCommand:  0,              // Action:command implementation
@@ -167,6 +168,10 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 305,   descr: '305°C'},
     { key: 310,   descr: '310°C'},
     { key: 315,   descr: '315°C'}
+  ];
+  $scope.lovPidBed = [
+    { key: 0,   descr: 'Bang-bang (Default)'},
+    { key: 1,   descr: 'PID controlled'}
   ];
   $scope.lovBeep = [
     { key: 'Ulti',   descr: 'UltiController default'},

@@ -109,6 +109,9 @@ switch ($data['cmd']) {
     if ($data['displayFan'] == 1) {
       $cmd .= ' DISPLAY_FAN';
     }
+    if ($data['pidBed'] == 1) {
+      $cmd .= ' PIDTEMPBED';
+    }
     if ($data['actionCommand'] == 1) {
       $cmd .= ' ACTION_COMMAND';
     }

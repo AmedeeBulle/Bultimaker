@@ -42,7 +42,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           motherboard:  72,         // UMOP has UM2 board
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
-          tempBed:      20          // Heated bed si PT100
+          tempBed:      20,         // Heated bed si PT100
+          frsPin:       26          // Pin for the sensor
         }
       }
     ],
@@ -55,16 +56,25 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       tempBed:        0,              // No heated bed
       controller:     'Ulti',         // Ulticontroller
       displayFan:     0,              // Display Fan% on Ulticontroller
+      actionCommand:  0,              // Action:command implementation
       baudrate:       250000,         // Default baud rate
       invertX:        1,              // Default axis direction on UMO
       invertY:        0,
+      invertZ:        1,
+      invertE0:       0,
+      invertE1:       0,
       language:       1,              // Interface language -- English
       timeout:        15000,          // Display timeout
       pulleys:        0,              // 0: MXL, 1: GT2
       maxtemp0:       275,            // Max temp for extruder 0
       maxtemp1:       275,            // Max temp for extruder 1
       beep:           'Ulti',         // Beep type. Ultimaker traditional or Marlin original
-      reverseEncoder: 0               // To fix the rotary knob
+      reverseEncoder: 0,              // To fix the rotary knob
+      filRunoutSensor: 0,             // Do we have a filament runout sensor?
+      frsPin:         17,             // Pin for the sensor
+      frsInvert:      1,              // Invert signal?
+      frsPullup:      1,              // Configure the pin Pull-up
+      fanKick:        0               // Fan kickstart time
     };
 
   // Returns available profiles
@@ -161,6 +171,29 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
   $scope.lovBeep = [
     { key: 'Ulti',   descr: 'UltiController default'},
     { key: 'Marlin', descr: 'Marlin original'}
+  ];
+  $scope.lovFrsPin = {
+    7: [              // Ultiboard 1.5.x
+      { key:   8,   descr: 'Exp3  8 - ATmega pin 17 - Digital pin  8'},
+      { key:   9,   descr: 'Exp3  9 - ATmega pin 18 - Digital pin  9'},
+      { key:  10,   descr: 'Exp3 10 - ATmega pin 23 - Digital pin 10'},
+      { key:  11,   descr: 'Exp3 11 - ATmega pin 24 - Digital pin 11'},
+      { key:  12,   descr: 'Exp3 12 - ATmega pin 25 - Digital pin 12'},
+      { key:  13,   descr: 'Exp3 13 - ATmega pin 26 - Digital pin 13'}
+    ],
+    72: [              // Ultiboard 2.x
+      { key:  13,   descr: 'Exp3 PB7   - ATmega Pin 26 - Digital pin 13'},
+      { key:  30,   descr: 'Ext/IO PC7 - ATmega Pin 60 - Digital pin 30'},
+      { key:  38,   descr: 'Ext/IO PD7 - ATmega Pin 50 - Digital pin 38'}
+    ]
+  };
+  $scope.lovFanKick = [
+    { key:   0,   descr: 'None (Default)'},
+    { key: 100,   descr: '100 ms'},
+    { key: 200,   descr: '200 ms'},
+    { key: 300,   descr: '300 ms'},
+    { key: 400,   descr: '400 ms'},
+    { key: 500,   descr: '500 ms (Recommended)'}
   ];
   
   // Buttons state and fields initialization

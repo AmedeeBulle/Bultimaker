@@ -92,6 +92,9 @@ switch ($data['cmd']) {
       ' HEATER_1_MAXTEMP='    . $data['maxtemp1'] .
       ' INVERT_X_DIR='        . ($data['invertX'] == 0 ? 'false' : 'true') .
       ' INVERT_Y_DIR='        . ($data['invertY'] == 0 ? 'false' : 'true') .
+      ' INVERT_Z_DIR='        . ($data['invertZ'] == 0 ? 'false' : 'true') .
+      ' INVERT_E0_DIR='       . ($data['invertE0'] == 0 ? 'false' : 'true') .
+      ' INVERT_E1_DIR='       . ($data['invertE1'] == 0 ? 'false' : 'true') .
       ' LANGUAGE_CHOICE='     . $data['language']
       ;
     if ($data['target'] == 'HBK') {
@@ -106,6 +109,9 @@ switch ($data['cmd']) {
     if ($data['displayFan'] == 1) {
       $cmd .= ' DISPLAY_FAN';
     }
+    if ($data['actionCommand'] == 1) {
+      $cmd .= ' ACTION_COMMAND';
+    }
     if ($data['pulleys'] == 1) {
       $cmd .= ' ULTIMAKER_GT2';
     }
@@ -114,6 +120,18 @@ switch ($data['cmd']) {
     }
     if ($data['reverseEncoder'] == 1) {
       $cmd .= ' REVERSE_ENCODER';
+    }
+    if ($data['filRunoutSensor'] == 1) {
+      $cmd .= ' FILAMENT_RUNOUT_SENSOR FILRUNOUT_PIN=' . $data['frsPin'];
+    if ($data['frsInvert'] == 1) {
+        $cmd .= ' FIL_RUNOUT_INVERT';
+      }
+    if ($data['frsPullup'] == 1) {
+        $cmd .= ' ENDSTOPPULLUP_FIL_RUNOUT';
+      }
+    }
+    if ($data['fanKick'] > 0) {
+      $cmd .= ' FAN_KICKSTART_TIME=' . $data['fanKick'];
     }
     // Close defines
     $cmd .= '" ';

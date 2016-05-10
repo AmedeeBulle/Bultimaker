@@ -84,7 +84,12 @@
                                  ng-false-value="0"> Reverse encoder</label>
         <p class="help-block">Some displays have the rotary knob inverted. Use this option to get it right.</p>
       </div>
-
+      <div class="checkbox">
+        <label><input type="checkbox" ng-model="params.actionCommand"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Implement <code>//action:command</code> protocol.</label>
+        <p class="help-block">If you are using <a href="http://octoprint.org/">OctoPrint</a> or <a href="http://www.pronterface.com/">Pronterface</a> it will allows you to Pause/Resume prints from your controller. See <a href="http://reprap.org/wiki/Gcode#Replies_from_the_RepRap_machine_to_the_host_computer">here</a> for more information.</p>
+      </div>
       <div class="form-group">
         <label>Controller language</label>
         <select class="form-control" ng-model="params.language" ng-options="lov.key as lov.descr for lov in lovLanguage"></select>
@@ -118,7 +123,7 @@
       <div class="form-group">
         <label>Motors</label>
         <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
-        (Note that inverted X axis is the default configuration on Ultimaker Original!)</p>
+        (Note that inverted X and Z axis is the default configuration on Ultimaker Original!)</p>
         <div class="checkbox">
           <label><input type="checkbox" ng-model="params.invertX"
                                  ng-true-value="1"
@@ -129,13 +134,58 @@
                                  ng-true-value="1"
                                  ng-false-value="0"> Invert Y axis direction</label>
         </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertZ"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert Z axis direction</label>
+        </div>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.invertE0"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert first Extruder (0) direction</label>
+        </div>
+        <div class="checkbox" ng-show="params.extruders == 2">
+          <label><input type="checkbox" ng-model="params.invertE1"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Invert second Extruder (1) direction</label>
+        </div>
       </div>
       <div class="form-group">
         <label>Pulleys</label>
         <select class="form-control" ng-model="params.pulleys" ng-options="lov.key as lov.descr for lov in lovPulleys"></select>
         <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
       </div>      
-
+      <div class="form-group">
+        <label>Fan kickstart</label>
+        <select class="form-control" ng-model="params.fanKick" ng-options="lov.key as lov.descr for lov in lovFanKick"></select>
+        <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
+      </div>
+      <div class="form-group">
+        <label>Filament runout sensor</label>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.filRunoutSensor"
+                                   ng-true-value="1"
+                                   ng-false-value="0"> Filament runout sensor</label>
+          <p class="help-block">Enable filament runout senseor. Additional hardware required! If you enable this and so not have a sensor you will not be able to print...</p>
+        </div>
+        <div ng-show="params.filRunoutSensor == 1">
+          <div class="form-group">
+            <label>Filament runout sensor pin</label>
+            <select class="form-control" ng-model="params.frsPin" ng-options="lov.key as lov.descr for lov in lovFrsPin[params.motherboard]"></select>
+            <p class="help-block">Pin used by the sensor</p>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="params.frsInvert"
+                                     ng-true-value="1"
+                                     ng-false-value="0"> Invert sensor pin signal</label>
+          </div>
+          <div class="checkbox">
+            <label><input type="checkbox" ng-model="params.frsPullup"
+                                     ng-true-value="1"
+                                     ng-false-value="0"> Enable pull-up on the sensor pin</label>
+          </div>
+        </div>
+      </div>
       <h2>Build Firmware</h2>
       <div class="row">
         <div class="col-sm-6">

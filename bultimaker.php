@@ -136,6 +136,9 @@ switch ($data['cmd']) {
     if ($data['fanKick'] > 0) {
       $cmd .= ' FAN_KICKSTART_TIME=' . $data['fanKick'];
     }
+    if ($data['fanSlowPwm'] == 1) {
+      $cmd .= ' SLOW_PWM_FAN';
+    }
     // Close defines
     $cmd .= '" ';
 

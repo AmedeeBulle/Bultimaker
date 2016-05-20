@@ -75,7 +75,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       frsPin:         17,             // Pin for the sensor
       frsInvert:      1,              // Invert signal?
       frsPullup:      1,              // Configure the pin Pull-up
-      fanKick:        0               // Fan kickstart time
+      fanKick:        0,              // Fan kickstart time
+      fanSlowPwm:     0               // Fan Slow PWM
     };
 
   // Returns available profiles

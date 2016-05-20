@@ -165,6 +165,15 @@
         <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
       </div>
       <div class="form-group">
+        <label>Fan PWM</label>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.fanSlowPwm"
+                                   ng-true-value="1"
+                                   ng-false-value="0"> Slow PWM</label>
+          <p class="help-block">Original Ultimaker firmware is using <i>Fast PWM</i> to control the fan. In some cases high PWM frequencies interfere with the temperature sensor. If your get erratic temperatures at slow fan speed, try this option.</p>
+        </div>
+      </div>
+      <div class="form-group">
         <label>Filament runout sensor</label>
         <div class="checkbox">
           <label><input type="checkbox" ng-model="params.filRunoutSensor"

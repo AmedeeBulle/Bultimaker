@@ -6,7 +6,7 @@
 //
 
 /*global angular, Blob */
-var bultimakerApp = angular.module('bultimakerApp', []);
+var bultimakerApp = angular.module('bultimakerApp', ['rzModule']);
 
 // Allow blob URLs
 bultimakerApp.config(['$compileProvider', function ($compileProvider) {
@@ -76,6 +76,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       frsInvert:      1,              // Invert signal?
       frsPullup:      1,              // Configure the pin Pull-up
       fanKick:        0,              // Fan kickstart time
+      fanMinPwm:      0,              // Fan Min PWM
       fanSlowPwm:     0               // Fan Slow PWM
     };
 
@@ -201,7 +202,15 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 400,   descr: '400 ms'},
     { key: 500,   descr: '500 ms (Recommended)'}
   ];
-  
+  $scope.sliderFanMinPwm = {
+    floor: 0,
+    ceil: 127,
+    step: 5,
+    showTicks: 10,
+    translate: function (value) {
+      return (value === 0) ? 'Off' : value;
+    }
+  };
   // Buttons state and fields initialization
   $scope.disableCompile = false;
   $scope.disableDownload = true;

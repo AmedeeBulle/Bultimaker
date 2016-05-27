@@ -142,6 +142,12 @@ switch ($data['cmd']) {
     if ($data['fanSlowPwm'] == 1) {
       $cmd .= ' SLOW_PWM_FAN';
     }
+    if ($data['e0AutoFan'] == 1) {
+      $cmd .= ' EXTRUDER_0_AUTO_FAN_PIN=255';
+    }
+    if ($data['e1AutoFan'] == 1) {
+      $cmd .= ' EXTRUDER_1_AUTO_FAN_PIN=255';
+    }
     // Close defines
     $cmd .= '" ';
 

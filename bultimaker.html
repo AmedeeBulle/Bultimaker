@@ -180,6 +180,21 @@
           <p class="help-block">Original Ultimaker firmware is using <i>Fast PWM</i> to control the fan. In some cases high PWM frequencies interfere with the temperature sensor. If your get erratic temperatures at slow fan speed, try this option.</p>
         </div>
       </div>
+      <div class="form-group" ng-show="params.motherboard == 72">
+        <label>Hot-end fan</label>
+        <p class="help-block">If your UMO+ has an Ultiboard 2.1.4 or newer, the hot-end fan is driven by the hot-end temperature.<br />
+        Check the following option if you have reftrofitted a fan on your hot-end.</p>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.e0AutoFan"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Auto fan driven by the first hot-end.</label>
+        </div>
+        <div class="checkbox" ng-show="params.extruders == 2">
+          <label><input type="checkbox" ng-model="params.e1AutoFan"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Auto fan driven by the second hot-end (You probably need this if you have a dual hot-end setup).</label>
+        </div>
+      </div>
       <div class="form-group">
         <label>Filament runout sensor</label>
         <div class="checkbox">

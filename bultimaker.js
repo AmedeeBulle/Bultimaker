@@ -77,7 +77,9 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       frsPullup:      1,              // Configure the pin Pull-up
       fanKick:        0,              // Fan kickstart time
       fanMinPwm:      0,              // Fan Min PWM
-      fanSlowPwm:     0               // Fan Slow PWM
+      fanSlowPwm:     0,              // Fan Slow PWM
+      e0AutoFan:      0,              // Extruder0 Auto Fan
+      e1AutoFan:      0               // Extruder1 Auto Fan
     };
 
   // Returns available profiles

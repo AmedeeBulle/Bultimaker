@@ -173,6 +173,19 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 310,   descr: '310°C'},
     { key: 315,   descr: '315°C'}
   ];
+  $scope.sliderTemp = {
+    floor: 270,
+    ceil: 400,
+    step: 5,
+    showTicks: 10,
+    translate: function (value) {
+      var suffix = '°C';
+      if (value === 275) {
+        suffix += ' (Default)';
+      }
+      return value + suffix;
+    }
+  };
   $scope.lovPidBed = [
     { key: 0,   descr: 'Bang-bang (Default)'},
     { key: 1,   descr: 'PID controlled'}

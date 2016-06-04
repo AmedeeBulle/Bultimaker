@@ -28,8 +28,8 @@
     </div>
     
     <div ng-controller="bultimakerCtrl" class="container">
-      <div class="container-fluid bg-danger" ng-show="info.experimental === 1">
-        <h2>Warning: experimental branch!</h2>
+      <div class="container-fluid bs-callout bs-callout-warning" ng-show="info.experimental === 1">
+        <h4><i class="fa fa-warning"></i> Warning: experimental branch <i class="fa fa-warning"></i></h4>
       </div>
       <h2>Basic configuration</h2>
       <p class="text-primary">Selecting a printer here will generate a default Ultimaker Firmware for this printer (as distributed with Cura)</p>
@@ -108,7 +108,11 @@
       <div class="form-group">
         <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
         <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
-        <select class="form-control" ng-model="params.maxtemp0" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+        <rzslider rz-slider-model="params.maxtemp0" rz-slider-options="sliderTemp"></rzslider>
+        <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp0 >= 300">
+          <h4><i class="fa fa-warning"></i> Warning!</h4>
+          <p>Printing at high temperatures requies special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
+        </div>
       </div>
       <div class="form-group" ng-show="params.extruders == 2">
         <label>Temperature sensor for the <strong>second</strong> hot-end</label>
@@ -116,7 +120,11 @@
       </div>
       <div class="form-group" ng-show="params.extruders == 2">
         <label>Maximum temperature for the <strong>second</strong> hot-end</label>
-        <select class="form-control" ng-model="params.maxtemp1" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+        <rzslider rz-slider-model="params.maxtemp1" rz-slider-options="sliderTemp"></rzslider>
+        <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp1 >= 300">
+          <h4><i class="fa fa-warning"></i> Warning!</h4>
+          <p>Printing at high temperatures requies special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
+        </div>
       </div>
       <div class="form-group">
         <label>Temperature sensor for the heated bed (if any)</label>
@@ -225,12 +233,12 @@
       <div class="row">
         <div class="col-sm-6">
           <h3>Firmware source information</h3>
-          <div class="bg-warning" ng-show="infoError">
+          <div class="bs-callout bs-callout-warning" ng-show="infoError">
             <h4>Communication error</h4>
             <p>{{infoError}}</p>
             <p>The build will most probably fail...</p>
           </div>
-          <div class="bg-info" ng-show="info.status === 0">
+          <div class="bs-callout bs-callout-info" ng-show="info.status === 0">
             <p>Repository: <a ng-href="{{info.url}}">{{info.repo}}</a><br/>
               Branch: <a ng-href="{{info.url}}/tree/{{info.branch}}">{{info.branch}}</a><br/>
               Last tag: {{info.tag}}<br/>
@@ -242,20 +250,22 @@
         <div class="col-sm-6">
           <h3>Build!</h3>
           <div>
-          <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
-            <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
-          <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
+            <p>
+              <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
+              <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
+              <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
+            </p>
           </div>
-          <div class="bg-info" ng-show="buildMd5">
+          <div class="bs-callout bs-callout-info" ng-show="buildMd5">
             <h4>Build completed</h4>
             Firmware MD5 hash: {{buildMd5}}
           </div>
-          <div class="bg-danger" ng-show="compileError">
+          <div class="bs-callout bs-callout-danger" ng-show="compileError">
             <h4>Build error</h4>
             <p>Something went wrong during compilation.<br/>
               Review the logfile and try again later...</p>
           </div>
-          <div class="bg-danger" ng-show="httpError">
+          <div class="bs-callout bs-callout-danger" ng-show="httpError">
             <h4>Communication error</h4>
             <p>Something went wrong when communicating with the server.<br/>
               <span ng-show="httpErrorStatus">Error status: {{httpErrorStatus}}<br /></span>
@@ -264,7 +274,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-info" ng-show="buildLog">
+      <div class="bs-callout bs-callout-info" ng-show="buildLog">
         <h3>Build log</h3>
         <pre class="pre-scrollable"><code>{{buildLog}}</code></pre>
       </div>

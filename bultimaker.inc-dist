@@ -10,4 +10,6 @@ define("MARLIN"         , "/path/to/marlin/sources"); // Location of the firmare
 define("ARDUINO_PATH"   , "/path/to/arduino");        // Arduino location & Version
 define("ARDUINO_VERSION", "106");
 
+define("LOG_FILE"       , "bultimaker.log");          // Log file
+
 ?>

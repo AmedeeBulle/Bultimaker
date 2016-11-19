@@ -14,6 +14,22 @@ define("GIT"            , "git --git-dir=".MARLIN."/.git");   // Git command
 define("BUILD_PREFIX"   , "Marlin_");                         // Prefix for build dir
 define("FIRMWARE"       , "Marlin.hex");                      // Firmware file name
 
+// Simple logging
+ini_set('log_errors', 1);
+function logger($data) {
+  // Add some info
+  $log = array(
+    'date' => date("Y-m-d h:m:s"),
+	'file' => __FILE__,
+	'remote_addr' => $_SERVER['REMOTE_ADDR'],
+	'user_agent' => $_SERVER['HTTP_USER_AGENT'],
+	'data' => $data
+  );
+  // Convert to string and send to log file
+  $json_data = json_encode($log) . PHP_EOL;
+  error_log($json_data, 3, LOG_FILE);
+}
+
 // We always answer in JSON
 header('Content-Type: application/json');
 
@@ -109,6 +125,9 @@ switch ($data['cmd']) {
     if ($data['displayFan'] == 1) {
       $cmd .= ' DISPLAY_FAN';
     }
+    if ($data['pidBed'] == 1) {
+      $cmd .= ' PIDTEMPBED';
+    }
     if ($data['actionCommand'] == 1) {
       $cmd .= ' ACTION_COMMAND';
     }
@@ -132,6 +151,18 @@ switch ($data['cmd']) {
     }
     if ($data['fanKick'] > 0) {
       $cmd .= ' FAN_KICKSTART_TIME=' . $data['fanKick'];
+    }
+    if ($data['fanMinPwm'] > 0) {
+      $cmd .= ' FAN_MIN_PWM=' . $data['fanMinPwm'];
+    }
+    if ($data['fanSlowPwm'] == 1) {
+      $cmd .= ' SLOW_PWM_FAN';
+    }
+    if ($data['e0AutoFan'] == 1) {
+      $cmd .= ' EXTRUDER_0_AUTO_FAN_PIN=255';
+    }
+    if ($data['e1AutoFan'] == 1) {
+      $cmd .= ' EXTRUDER_1_AUTO_FAN_PIN=255';
     }
     // Close defines
     $cmd .= '" ';
@@ -158,8 +189,12 @@ switch ($data['cmd']) {
     // Cleanup
     exec('rm -rf "' . $buildDir . '"');
   
-    // Call it a success
+    // Call it a success and log!
     $resp['status']     = 0;
+	$log['request'] = $data;
+	$log['command'] = $cmd;
+	$log['md5'] = $resp['md5'];
+	logger($log);
     break;
   default:
     // Unknown request

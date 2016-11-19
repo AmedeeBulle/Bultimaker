@@ -6,7 +6,7 @@
 //
 
 /*global angular, Blob */
-var bultimakerApp = angular.module('bultimakerApp', []);
+var bultimakerApp = angular.module('bultimakerApp', ['rzModule']);
 
 // Allow blob URLs
 bultimakerApp.config(['$compileProvider', function ($compileProvider) {
@@ -32,7 +32,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
         label: 'Ultimaker Original with HBK',
         buildParams: {
           target:       'HBK',
-          tempBed:      20        // Heated bed si PT100
+          tempBed:      20        // Heated bed is PT100
         }
       },
       {
@@ -42,7 +42,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           motherboard:  72,         // UMOP has UM2 board
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
-          tempBed:      20,         // Heated bed si PT100
+          tempBed:      20,         // Heated bed is PT100
           frsPin:       26          // Pin for the sensor
         }
       }
@@ -54,6 +54,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       temp0:          -1,             // Extruder is thermocouple
       temp1:          -1,             // 2nd extruder if any is thermocouple
       tempBed:        0,              // No heated bed
+      pidBed:         0,              // No PID control for heated bed
       controller:     'Ulti',         // Ulticontroller
       displayFan:     0,              // Display Fan% on Ulticontroller
       actionCommand:  0,              // Action:command implementation
@@ -74,7 +75,11 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       frsPin:         17,             // Pin for the sensor
       frsInvert:      1,              // Invert signal?
       frsPullup:      1,              // Configure the pin Pull-up
-      fanKick:        0               // Fan kickstart time
+      fanKick:        0,              // Fan kickstart time
+      fanMinPwm:      0,              // Fan Min PWM
+      fanSlowPwm:     0,              // Fan Slow PWM
+      e0AutoFan:      0,              // Extruder0 Auto Fan
+      e1AutoFan:      0               // Extruder1 Auto Fan
     };
 
   // Returns available profiles
@@ -168,6 +173,23 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 310,   descr: '310°C'},
     { key: 315,   descr: '315°C'}
   ];
+  $scope.sliderTemp = {
+    floor: 270,
+    ceil: 400,
+    step: 5,
+    showTicks: 10,
+    translate: function (value) {
+      var suffix = '°C';
+      if (value === 275) {
+        suffix += ' (Default)';
+      }
+      return value + suffix;
+    }
+  };
+  $scope.lovPidBed = [
+    { key: 0,   descr: 'Bang-bang (Default)'},
+    { key: 1,   descr: 'PID controlled'}
+  ];
   $scope.lovBeep = [
     { key: 'Ulti',   descr: 'UltiController default'},
     { key: 'Marlin', descr: 'Marlin original'}
@@ -195,7 +217,15 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     { key: 400,   descr: '400 ms'},
     { key: 500,   descr: '500 ms (Recommended)'}
   ];
-  
+  $scope.sliderFanMinPwm = {
+    floor: 0,
+    ceil: 127,
+    step: 5,
+    showTicks: 10,
+    translate: function (value) {
+      return (value === 0) ? 'Off' : value;
+    }
+  };
   // Buttons state and fields initialization
   $scope.disableCompile = false;
   $scope.disableDownload = true;

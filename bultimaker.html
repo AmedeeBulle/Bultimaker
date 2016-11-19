@@ -5,9 +5,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Marlin Ultimaker Generator</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.10/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/2.13.0/rzslider.min.js"></script>
     <script src="bultimaker.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -15,7 +16,8 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
     <!-- Font awesome for the spinner -->
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/2.13.0/rzslider.min.css">
     <!-- CSS tweaks -->
     <link rel="stylesheet" href="bultimaker.css">
   </head>
@@ -26,8 +28,8 @@
     </div>
     
     <div ng-controller="bultimakerCtrl" class="container">
-      <div class="container-fluid bg-danger" ng-show="info.experimental === 1">
-        <h2>Warning: experimental branch!</h2>
+      <div class="container-fluid bs-callout bs-callout-warning" ng-show="info.experimental === 1">
+        <h4><i class="fa fa-warning"></i> Warning: experimental branch <i class="fa fa-warning"></i></h4>
       </div>
       <h2>Basic configuration</h2>
       <p class="text-primary">Selecting a printer here will generate a default Ultimaker Firmware for this printer (as distributed with Cura)</p>
@@ -106,7 +108,11 @@
       <div class="form-group">
         <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
         <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
-        <select class="form-control" ng-model="params.maxtemp0" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+        <rzslider rz-slider-model="params.maxtemp0" rz-slider-options="sliderTemp"></rzslider>
+        <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp0 >= 300">
+          <h4><i class="fa fa-warning"></i> Warning!</h4>
+          <p>Printing at high temperatures requies special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
+        </div>
       </div>
       <div class="form-group" ng-show="params.extruders == 2">
         <label>Temperature sensor for the <strong>second</strong> hot-end</label>
@@ -114,12 +120,20 @@
       </div>
       <div class="form-group" ng-show="params.extruders == 2">
         <label>Maximum temperature for the <strong>second</strong> hot-end</label>
-        <select class="form-control" ng-model="params.maxtemp1" ng-options="lov.key as lov.descr for lov in lovTemp"></select>
+        <rzslider rz-slider-model="params.maxtemp1" rz-slider-options="sliderTemp"></rzslider>
+        <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp1 >= 300">
+          <h4><i class="fa fa-warning"></i> Warning!</h4>
+          <p>Printing at high temperatures requies special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
+        </div>
       </div>
       <div class="form-group">
         <label>Temperature sensor for the heated bed (if any)</label>
         <select class="form-control" ng-model="params.tempBed" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
       </div>   
+      <div class="form-group" ng-show="params.tempBed == 20">
+        <label>Temperature control for the heated bed</label>
+        <select class="form-control" ng-model="params.pidBed" ng-options="lov.key as lov.descr for lov in lovPidBed"></select>
+      </div>
       <div class="form-group">
         <label>Motors</label>
         <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
@@ -161,6 +175,35 @@
         <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
       </div>
       <div class="form-group">
+        <label>Fan minimum PWM</label>
+        <rzslider rz-slider-model="params.fanMinPwm" rz-slider-options="sliderFanMinPwm"></rzslider>
+        <p class="help-block">Defines the minimal speed for the main fan, run in PWM mode. This is a PWM value (0-255), not a percentage!</p>
+      </div>
+      <div class="form-group">
+        <label>Fan PWM</label>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.fanSlowPwm"
+                                   ng-true-value="1"
+                                   ng-false-value="0"> Slow PWM</label>
+          <p class="help-block">Original Ultimaker firmware is using <i>Fast PWM</i> to control the fan. In some cases high PWM frequencies interfere with the temperature sensor. If your get erratic temperatures at slow fan speed, try this option.</p>
+        </div>
+      </div>
+      <div class="form-group" ng-show="params.motherboard == 72">
+        <label>Hot-end fan</label>
+        <p class="help-block">If your UMO+ has an Ultiboard 2.1.4 or newer, the hot-end fan is driven by the hot-end temperature.<br />
+        Check the following option if you have reftrofitted a fan on your hot-end.</p>
+        <div class="checkbox">
+          <label><input type="checkbox" ng-model="params.e0AutoFan"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Auto fan driven by the first hot-end.</label>
+        </div>
+        <div class="checkbox" ng-show="params.extruders == 2">
+          <label><input type="checkbox" ng-model="params.e1AutoFan"
+                                 ng-true-value="1"
+                                 ng-false-value="0"> Auto fan driven by the second hot-end (You probably need this if you have a dual hot-end setup).</label>
+        </div>
+      </div>
+      <div class="form-group">
         <label>Filament runout sensor</label>
         <div class="checkbox">
           <label><input type="checkbox" ng-model="params.filRunoutSensor"
@@ -190,12 +233,12 @@
       <div class="row">
         <div class="col-sm-6">
           <h3>Firmware source information</h3>
-          <div class="bg-warning" ng-show="infoError">
+          <div class="bs-callout bs-callout-warning" ng-show="infoError">
             <h4>Communication error</h4>
             <p>{{infoError}}</p>
             <p>The build will most probably fail...</p>
           </div>
-          <div class="bg-info" ng-show="info.status === 0">
+          <div class="bs-callout bs-callout-info" ng-show="info.status === 0">
             <p>Repository: <a ng-href="{{info.url}}">{{info.repo}}</a><br/>
               Branch: <a ng-href="{{info.url}}/tree/{{info.branch}}">{{info.branch}}</a><br/>
               Last tag: {{info.tag}}<br/>
@@ -207,20 +250,22 @@
         <div class="col-sm-6">
           <h3>Build!</h3>
           <div>
-          <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
-            <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
-          <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
+            <p>
+              <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
+              <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
+              <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
+            </p>
           </div>
-          <div class="bg-info" ng-show="buildMd5">
+          <div class="bs-callout bs-callout-info" ng-show="buildMd5">
             <h4>Build completed</h4>
             Firmware MD5 hash: {{buildMd5}}
           </div>
-          <div class="bg-danger" ng-show="compileError">
+          <div class="bs-callout bs-callout-danger" ng-show="compileError">
             <h4>Build error</h4>
             <p>Something went wrong during compilation.<br/>
               Review the logfile and try again later...</p>
           </div>
-          <div class="bg-danger" ng-show="httpError">
+          <div class="bs-callout bs-callout-danger" ng-show="httpError">
             <h4>Communication error</h4>
             <p>Something went wrong when communicating with the server.<br/>
               <span ng-show="httpErrorStatus">Error status: {{httpErrorStatus}}<br /></span>
@@ -229,7 +274,7 @@
           </div>
         </div>
       </div>
-      <div class="bg-info" ng-show="buildLog">
+      <div class="bs-callout bs-callout-info" ng-show="buildLog">
         <h3>Build log</h3>
         <pre class="pre-scrollable"><code>{{buildLog}}</code></pre>
       </div>

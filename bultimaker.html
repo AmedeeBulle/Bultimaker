@@ -41,7 +41,7 @@
         </select>
         <div class="help-block">Notes
           <ul>
-            <li>Selecting a printer will (re-)set all fields in te next sections to their default value</li>
+            <li>Selecting a printer will (re-)set all fields in the next sections to their default value</li>
             <li>An "{{profiles[1].label}}" and an "{{profiles[2].label}}" are different printers -- they do <strong>not</strong> have the same motherboard!</li>
             <li>The "{{profiles[1].label}}" selection is for the <em>official</em> Ultimaker heated bed kit only.
               For a self-built heated bed, select "{{profiles[0].label}}" and specify your heated bed sensor type in the <em>Expert</em> section.
@@ -73,7 +73,7 @@
         <label><input type="checkbox" ng-model="params.displayFan"
                                  ng-true-value="1"
                                  ng-false-value="0"> Display fan percentage</label>
-        <p class="help-block">Display the fan percentage at the end of the status line. Selecting this will truncate any message on the status line to 14 characters.</p>
+        <p class="help-block">Display the fan percentage at the start of the status line. Selecting this will truncate any message on the status line to 14 characters.</p>
       </div>
       <div class="form-group" ng-show="params.controller == 'Ulti'">
         <label>Controller beep sound</label>

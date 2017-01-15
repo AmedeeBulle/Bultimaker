@@ -79,7 +79,9 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       fanMinPwm:      0,              // Fan Min PWM
       fanSlowPwm:     0,              // Fan Slow PWM
       e0AutoFan:      0,              // Extruder0 Auto Fan
-      e1AutoFan:      0               // Extruder1 Auto Fan
+      e1AutoFan:      0,              // Extruder1 Auto Fan
+      tweakTemp:      0,              // Tweak temp feature
+      tweakMaxOffset: 50              // Max temperature offset for tweaks
     };
 
   // Returns available profiles
@@ -224,6 +226,19 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
     showTicks: 10,
     translate: function (value) {
       return (value === 0) ? 'Off' : value;
+    }
+  };
+  $scope.sliderTweakMaxOfset = {
+    floor: 10,
+    ceil: 100,
+    step: 5,
+    showTicks: 10,
+    translate: function (value) {
+      var suffix = '°C';
+      if (value === 50) {
+        suffix += ' (Default)';
+      }
+      return value + suffix;
     }
   };
   // Buttons state and fields initialization

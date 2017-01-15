@@ -164,6 +164,9 @@ switch ($data['cmd']) {
     if ($data['e1AutoFan'] == 1) {
       $cmd .= ' EXTRUDER_1_AUTO_FAN_PIN=255';
     }
+    if ($data['tweakTemp'] == 1) {
+      $cmd .= ' TWEAK_TEMP TWEAK_MAX_OFFSET=' . $data['tweakMaxOffset'];
+    }
     // Close defines
     $cmd .= '" ';
 

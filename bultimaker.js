@@ -43,7 +43,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
           tempBed:      20,         // Heated bed is PT100
-          frsPin:       26          // Pin for the sensor
+          frsPin:       13          // Pin for the sensor
         }
       }
     ],
@@ -72,7 +72,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       beep:           'Ulti',         // Beep type. Ultimaker traditional or Marlin original
       reverseEncoder: 0,              // To fix the rotary knob
       filRunoutSensor: 0,             // Do we have a filament runout sensor?
-      frsPin:         17,             // Pin for the sensor
+      frsPin:         8,              // Pin for the sensor (1.5.x boards)
       frsInvert:      1,              // Invert signal?
       frsPullup:      1,              // Configure the pin Pull-up
       fanKick:        0,              // Fan kickstart time

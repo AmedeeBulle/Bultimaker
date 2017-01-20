@@ -134,7 +134,7 @@
             <select class="form-control" ng-model="params.temp0" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>
           <div class="form-group">
-            <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.firmware"></label>
+              <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.firmware"></span></label>
             <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
             <rzslider rz-slider-model="params.maxtemp0" rz-slider-options="sliderTemp"></rzslider>
             <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp0 >= 300">
@@ -159,7 +159,7 @@
             <select class="form-control" ng-model="params.tempBed" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>   
           <div class="form-group" ng-show="params.tempBed == 20">
-            <label>Temperature control for the heated bed <span ng-bind-html="flag.firmware"></label>
+              <label>Temperature control for the heated bed <span ng-bind-html="flag.firmware"></span></label>
             <select class="form-control" ng-model="params.pidBed" ng-options="lov.key as lov.descr for lov in lovPidBed"></select>
           </div>
           <div class="form-group">

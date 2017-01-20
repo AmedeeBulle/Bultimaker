@@ -228,7 +228,7 @@ bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($s
       return (value === 0) ? 'Off' : value;
     }
   };
-  $scope.sliderTweakMaxOfset = {
+  $scope.sliderTweakMaxOffset = {
     floor: 10,
     ceil: 100,
     step: 5,

@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Marlin Ultimaker Generator</title>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-sanitize.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/2.13.0/rzslider.min.js"></script>
     <script src="bultimaker.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -15,8 +16,6 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
-    <!-- Font awesome for the spinner -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angularjs-slider/2.13.0/rzslider.min.css">
     <!-- CSS tweaks -->
     <link rel="stylesheet" href="bultimaker.css">
@@ -29,8 +28,9 @@
     
     <div ng-controller="bultimakerCtrl" class="container">
       <div class="container-fluid bs-callout bs-callout-warning" ng-show="info.experimental === 1">
-        <h4><i class="fa fa-warning"></i> Warning: experimental branch <i class="fa fa-warning"></i></h4>
-        <p>New experimental features are flagged with the <span class="label label-warning">Experimental</span> label</p>
+        <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Experimental branch</h4>
+        <p>You are using the experimental branches of the builder and the firmware.<br />
+        Features flagged with the <span class="label label-warning">Experimental</span> label are new and may be subject to change.</p>
       </div>
       <h2>Basic configuration</h2>
       <p class="text-primary">Selecting a printer here will generate a default Ultimaker Firmware for this printer (as distributed with Cura)</p>
@@ -63,26 +63,38 @@
         <select class="form-control" ng-model="params.baudrate" ng-options="lov.key as lov.descr for lov in lovBaudrate"></select>
         <p class="help-block">115200 is provided for historical reasons, use only if your host software cannot do 250000.</p>
       </div>
-      <h2>Expert configuration</h2>
-      <p class="text-danger">Changing something in this section will generate a Custom Firmware.<br />
+      <h2>Advanced configuration</h2>
+      <div class="container-fluid bs-callout bs-callout-info">
+        <h4><span class="glyphicon glyphicon-info-sign"></span> About the Advanced section</h4>
+        <p>Changing something in this section will generate a Custom Firmware.<br />
         This firmware may not run on your {{umSelect.label}} if you select a wrong hardware component!</p>
+        <p>Features are grouped by topic of interrest (Controller, Fans, ...) and typically have an information label:</p>
+        <ul>
+          <li><span ng-bind-html="flag.firmware"></span> Firmware-only enhancement.</li>
+          <li><span ng-bind-html="flag.hardware"></span> Feature linked to hardware componenent(s) -- hardware change is needed (e.g. sensor, pulleys, ...)</li>
+          <li><span ng-bind-html="flag.expert"></span> Do not try this feature if you do not undestand what it is about!</li>
+        </ul>
+      </div>
       <div class="panel panel-primary">
         <div class="panel-heading">
           <h3 class="panel-title">Controller</h3>
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Controller type</label>
+            <label>Controller type <span ng-bind-html="flag.hardware"></span></label>
             <select class="form-control" ng-model="params.controller" ng-options="lov.key as lov.descr for lov in lovController"></select>
           </div>
-          <div class="checkbox" ng-show="params.controller == 'Ulti'">
-            <label><input type="checkbox" ng-model="params.displayFan"
-                                     ng-true-value="1"
-                                     ng-false-value="0"> Display fan percentage</label>
-            <p class="help-block">Display the fan percentage at the start of the status line. Selecting this will truncate any message on the status line to 14 characters.</p>
+          <div class="form-group" ng-show="params.controller == 'Ulti'">
+            <label>Fan percentage <span ng-bind-html="flag.firmware"></span></label>
+            <div class="checkbox">
+              <label><input type="checkbox" ng-model="params.displayFan"
+                                       ng-true-value="1"
+                                       ng-false-value="0"> Display fan percentage</label>
+              <p class="help-block">Display the fan percentage at the start of the status line. Selecting this will truncate any message on the status line to 14 characters.</p>
+            </div>
           </div>
           <div class="form-group" ng-show="params.controller == 'Ulti'">
-            <label>Controller beep sound</label>
+            <label>Controller beep sound <span ng-bind-html="flag.firmware"></span></label>
             <select class="form-control" ng-model="params.beep" ng-options="lov.key as lov.descr for lov in lovBeep"></select>
             <p class="help-block">Whatever you prefer! The Marlin beep sound is higher and shorter than the Ulticontroller default one. Undecided? Look at this <a href="https://www.youtube.com/watch?v=BQvZipUXVJk">short video</a>!</p>
           </div>
@@ -92,18 +104,21 @@
                                      ng-false-value="0"> Reverse encoder</label>
             <p class="help-block">Some displays have the rotary knob inverted. Use this option to get it right.</p>
           </div>
-          <div class="checkbox">
-            <label><input type="checkbox" ng-model="params.actionCommand"
-                                     ng-true-value="1"
-                                     ng-false-value="0"> Implement <code>//action:command</code> protocol.</label>
-            <p class="help-block">If you are using <a href="http://octoprint.org/">OctoPrint</a> or <a href="http://www.pronterface.com/">Pronterface</a> it will allows you to Pause/Resume prints from your controller. See <a href="http://reprap.org/wiki/Gcode#Replies_from_the_RepRap_machine_to_the_host_computer">here</a> for more information.</p>
+          <div class="form-group">
+            <label>Action:command <span ng-bind-html="flag.firmware"></span></label>
+            <div class="checkbox">
+              <label><input type="checkbox" ng-model="params.actionCommand"
+                                       ng-true-value="1"
+                                       ng-false-value="0"> Implement <code>//action:command</code> protocol.</label>
+              <p class="help-block">If you are using <a href="http://octoprint.org/">OctoPrint</a> or <a href="http://www.pronterface.com/">Pronterface</a> it will allows you to Pause/Resume prints from your controller. See <a href="http://reprap.org/wiki/Gcode#Replies_from_the_RepRap_machine_to_the_host_computer">here</a> for more information.</p>
+            </div>
           </div>
           <div class="form-group">
-            <label>Controller language</label>
+            <label>Controller language <span ng-bind-html="flag.firmware"></span></label>
             <select class="form-control" ng-model="params.language" ng-options="lov.key as lov.descr for lov in lovLanguage"></select>
           </div>      
           <div class="form-group">
-            <label>Display timeout</label>
+            <label>Display timeout <span ng-bind-html="flag.firmware"></span></label>
             <select class="form-control" ng-model="params.timeout" ng-options="lov.key as lov.descr for lov in lovTimeout"></select>
             <p class="help-block">Delay before returning to status page when idle in menus</p>
           </div>      
@@ -115,40 +130,40 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Temperature sensor for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
+            <label>Temperature sensor for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.hardware"></span></label>
             <select class="form-control" ng-model="params.temp0" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>
           <div class="form-group">
-            <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end</label>
+            <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.firmware"></label>
             <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
             <rzslider rz-slider-model="params.maxtemp0" rz-slider-options="sliderTemp"></rzslider>
             <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp0 >= 300">
-              <h4><i class="fa fa-warning"></i> Warning!</h4>
+              <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</h4>
               <p>Printing at high temperatures requires special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
             </div>
           </div>
           <div class="form-group" ng-show="params.extruders == 2">
-            <label>Temperature sensor for the <strong>second</strong> hot-end</label>
+            <label>Temperature sensor for the <strong>second</strong> hot-end <span ng-bind-html="flag.hardware"></span></label>
             <select class="form-control" ng-model="params.temp1" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>
           <div class="form-group" ng-show="params.extruders == 2">
-            <label>Maximum temperature for the <strong>second</strong> hot-end</label>
+            <label>Maximum temperature for the <strong>second</strong> hot-end <span ng-bind-html="flag.firmware"></span></label>
             <rzslider rz-slider-model="params.maxtemp1" rz-slider-options="sliderTemp"></rzslider>
             <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp1 >= 300">
-              <h4><i class="fa fa-warning"></i> Warning!</h4>
+              <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</h4>
               <p>Printing at high temperatures requires special hot-end; stock Ultimaker hot-end will be damaged when printing too hot.</p>
             </div>
           </div>
           <div class="form-group">
-            <label>Temperature sensor for the heated bed (if any)</label>
+            <label>Temperature sensor for the heated bed (if any) <span ng-bind-html="flag.hardware"></span></label>
             <select class="form-control" ng-model="params.tempBed" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>   
           <div class="form-group" ng-show="params.tempBed == 20">
-            <label>Temperature control for the heated bed</label>
+            <label>Temperature control for the heated bed <span ng-bind-html="flag.firmware"></label>
             <select class="form-control" ng-model="params.pidBed" ng-options="lov.key as lov.descr for lov in lovPidBed"></select>
           </div>
           <div class="form-group">
-            <label>Temperature tweaks <span class="label label-warning">Experimental</span></label>
+            <label>Temperature tweaks <span ng-bind-html="flag.firmware"></span> <span class="label label-warning">Experimental</span></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.tweakTemp"
                                        ng-true-value="1"
@@ -171,26 +186,26 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Fan kickstart</label>
+            <label>Fan kickstart <span ng-bind-html="flag.firmware"></span></label>
             <select class="form-control" ng-model="params.fanKick" ng-options="lov.key as lov.descr for lov in lovFanKick"></select>
             <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
           </div>
           <div class="form-group">
-            <label>Fan minimum PWM</label>
+            <label>Fan minimum PWM <span ng-bind-html="flag.firmware"></span></label>
             <rzslider rz-slider-model="params.fanMinPwm" rz-slider-options="sliderFanMinPwm"></rzslider>
             <p class="help-block">Defines the minimal speed for the main fan, run in PWM mode. This is a PWM value (0-255), not a percentage!</p>
           </div>
           <div class="form-group">
-            <label>Fan PWM</label>
+            <label>Fan PWM <span ng-bind-html="flag.firmware"></span></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.fanSlowPwm"
-                                       ng-true-value="1"
-                                       ng-false-value="0"> Slow PWM</label>
-              <p class="help-block">Original Ultimaker firmware is using <i>Fast PWM</i> to control the fan. In some cases high PWM frequencies interfere with the temperature sensor. If your get erratic temperatures at slow fan speed, try this option.</p>
+                                       ng-true-value="0"
+                                       ng-false-value="1"> Fast PWM</label>
+              <p class="help-block">Original Ultimaker firmware is using <i>Fast PWM</i> to control the fan. In some cases high PWM frequencies interfere with the temperature sensor, in particular with a thermocouple. If your get erratic temperatures at low fan speed, try disabling option.</p>
             </div>
           </div>
           <div class="form-group" ng-show="params.motherboard == 72">
-            <label>Hot-end fan</label>
+            <label>Hot-end fan <span ng-bind-html="flag.hardware"></span></label>
             <p class="help-block">If your UMO+ has an Ultiboard 2.1.4 or newer, the hot-end fan is driven by the hot-end temperature.<br />
             Check the following option if you have reftrofitted a fan on your hot-end.</p>
             <div class="checkbox">
@@ -212,7 +227,7 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Motors</label>
+            <label>Motors <span ng-bind-html="flag.hardware"></span></label>
             <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
             (Note that inverted X and Z axis is the default configuration on Ultimaker Original!)</p>
             <div class="checkbox">
@@ -242,12 +257,12 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Pulleys</label>
+            <label>Pulleys <span ng-bind-html="flag.hardware"></span></label>
             <select class="form-control" ng-model="params.pulleys" ng-options="lov.key as lov.descr for lov in lovPulleys"></select>
             <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
           </div>      
           <div class="form-group">
-            <label>Filament runout sensor</label>
+            <label>Filament runout sensor <span ng-bind-html="flag.hardware"></span> <span ng-bind-html="flag.expert"></span></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.filRunoutSensor"
                                        ng-true-value="1"
@@ -297,7 +312,7 @@
           <div>
             <p>
               <a class="btn btn-primary has-spinner" ng-class="{active: disableCompile}" ng-click="compile()" ng-disabled="disableCompile">
-              <span class="spinner"><i class="fa fa-cog fa-spin fa-lg"></i></span>Build firmware</a>
+              <span class="spinner"><span class="glyphicon glyphicon-cog glyphicon-spin"></span></span>Build firmware</a>
               <a class="btn btn-primary" ng-href="{{buildFirmware}}" download="{{firmwareFile}}" ng-disabled="disableDownload">Download firmware</a>
             </p>
           </div>

@@ -6,7 +6,7 @@
 //
 
 /*global angular, Blob */
-var bultimakerApp = angular.module('bultimakerApp', ['rzModule']);
+var bultimakerApp = angular.module('bultimakerApp', ['rzModule', 'ngSanitize']);
 
 // Allow blob URLs
 bultimakerApp.config(['$compileProvider', function ($compileProvider) {
@@ -108,7 +108,7 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
   return umo;
 }]);
 
-bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
+bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($scope, umoFactory) {
   "use strict";
 
   // List of values
@@ -241,6 +241,12 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
       return value + suffix;
     }
   };
+  // Shortcuts...
+  $scope.flag = {
+    firmware: '<span class="label label-info"><span class="glyphicon glyphicon-sunglasses"></span> Firmware</span>',
+    hardware: '<span class="label label-info"><span class="glyphicon glyphicon-scissors"></span> Hardware</span>',
+    expert: '<span class="label label-info"><span class="glyphicon glyphicon-education"></span> Expert</span>'
+  };
   // Buttons state and fields initialization
   $scope.disableCompile = false;
   $scope.disableDownload = true;
@@ -311,4 +317,4 @@ bultimakerApp.controller('bultimakerCtrl', function ($scope, umoFactory) {
   $scope.umSelected = function () {
     $scope.params = angular.extend({}, umoFactory.getParams(), $scope.umSelect.buildParams);
   };
-});
+}]);

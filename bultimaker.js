@@ -108,6 +108,35 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
   return umo;
 }]);
 
+bultimakerApp.component('bulLabel', {
+  bindings: {
+    flag: '@'
+  },
+
+  template: '<span class="label label-{{$ctrl.label}}"><span class="glyphicon glyphicon-{{$ctrl.glyph}}"></span> {{$ctrl.text}}</span>',
+
+  controller: function () {
+    "use strict";
+    var flags = {
+      firmware:     ['info',    'sunglasses',       'Firmware'],
+      hardware:     ['info',    'wrench',           'Hardware'],
+      expert:       ['info',    'education',        'Expert'],
+      experimental: ['warning', 'exclamation-sign', 'Experimental'],
+      wip:          ['danger',  'flash',            'Work in progress']
+    };
+
+    if (flags[this.flag] !== undefined) {
+      this.label = flags[this.flag][0];
+      this.glyph = flags[this.flag][1];
+      this.text = flags[this.flag][2];
+    } else {
+      this.label = 'danger';
+      this.glyph = 'question-sign';
+      this.text = this.flag;
+    }
+  }
+});
+
 bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($scope, umoFactory) {
   "use strict";
 
@@ -240,12 +269,6 @@ bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($s
       }
       return value + suffix;
     }
-  };
-  // Shortcuts...
-  $scope.flag = {
-    firmware: '<span class="label label-info"><span class="glyphicon glyphicon-sunglasses"></span> Firmware</span>',
-    hardware: '<span class="label label-info"><span class="glyphicon glyphicon-scissors"></span> Hardware</span>',
-    expert: '<span class="label label-info"><span class="glyphicon glyphicon-education"></span> Expert</span>'
   };
   // Buttons state and fields initialization
   $scope.disableCompile = false;

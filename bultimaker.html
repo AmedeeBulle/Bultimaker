@@ -29,8 +29,7 @@
     <div ng-controller="bultimakerCtrl" class="container">
       <div class="container-fluid bs-callout bs-callout-warning" ng-show="info.experimental === 1">
         <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Experimental branch</h4>
-        <p>You are using the experimental branches of the builder and the firmware.<br />
-        Features flagged with the <span class="label label-warning">Experimental</span> label are new and may be subject to change.</p>
+        <p>You are using the experimental branches of the builder and the firmware.</p>
       </div>
       <h2>Basic configuration</h2>
       <p class="text-primary">Selecting a printer here will generate a default Ultimaker Firmware for this printer (as distributed with Cura)</p>
@@ -70,9 +69,15 @@
         This firmware may not run on your {{umSelect.label}} if you select a wrong hardware component!</p>
         <p>Features are grouped by topic of interrest (Controller, Fans, ...) and typically have an information label:</p>
         <ul>
-          <li><span ng-bind-html="flag.firmware"></span> Firmware-only enhancement.</li>
-          <li><span ng-bind-html="flag.hardware"></span> Feature linked to hardware componenent(s) -- hardware change is needed (e.g. sensor, pulleys, ...)</li>
-          <li><span ng-bind-html="flag.expert"></span> Do not try this feature if you do not undestand what it is about!</li>
+          <li><bul-label flag="firmware"></bul-label> Firmware-only enhancement.<br />
+            Changing firmware-only settings won't fundamentally break anything, feel free to make changes and customize  the firmware to suit your needs.</li>
+          <li><bul-label flag="hardware"></bul-label> Feature linked to hardware component(s).<br />
+            These setting support third party hardware or custom changes (full graphic controller, GT2 pulleys, direct drive, ...). Only enable these features if you have the corresponding hardware in place!</li>
+          <li><bul-label flag="expert"></bul-label> Do not try this feature if you do not understand what it is about!</li>
+          <li ng-show="info.experimental === 1"><bul-label flag="experimental"></bul-label> Feature of the <em>Experimental</em> branch.<br />
+            New feature, not widely tested. May be unstable.</li>
+          <li ng-show="info.experimental === 1"><bul-label flag="wip"></bul-label> Work in progress.<br />
+            Feature under active development, stay away from it!</li>
         </ul>
       </div>
       <div class="panel panel-primary">
@@ -81,11 +86,11 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Controller type <span ng-bind-html="flag.hardware"></span></label>
+            <label>Controller type <bul-label flag="hardware"></bul-label></label>
             <select class="form-control" ng-model="params.controller" ng-options="lov.key as lov.descr for lov in lovController"></select>
           </div>
           <div class="form-group" ng-show="params.controller == 'Ulti'">
-            <label>Fan percentage <span ng-bind-html="flag.firmware"></span></label>
+            <label>Fan percentage <bul-label flag="firmware"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.displayFan"
                                        ng-true-value="1"
@@ -94,7 +99,7 @@
             </div>
           </div>
           <div class="form-group" ng-show="params.controller == 'Ulti'">
-            <label>Controller beep sound <span ng-bind-html="flag.firmware"></span></label>
+            <label>Controller beep sound <bul-label flag="firmware"></bul-label></label>
             <select class="form-control" ng-model="params.beep" ng-options="lov.key as lov.descr for lov in lovBeep"></select>
             <p class="help-block">Whatever you prefer! The Marlin beep sound is higher and shorter than the Ulticontroller default one. Undecided? Look at this <a href="https://www.youtube.com/watch?v=BQvZipUXVJk">short video</a>!</p>
           </div>
@@ -105,7 +110,7 @@
             <p class="help-block">Some displays have the rotary knob inverted. Use this option to get it right.</p>
           </div>
           <div class="form-group">
-            <label>Action:command <span ng-bind-html="flag.firmware"></span></label>
+            <label>Action:command <bul-label flag="firmware"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.actionCommand"
                                        ng-true-value="1"
@@ -114,11 +119,11 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Controller language <span ng-bind-html="flag.firmware"></span></label>
+            <label>Controller language <bul-label flag="firmware"></bul-label></label>
             <select class="form-control" ng-model="params.language" ng-options="lov.key as lov.descr for lov in lovLanguage"></select>
           </div>      
           <div class="form-group">
-            <label>Display timeout <span ng-bind-html="flag.firmware"></span></label>
+            <label>Display timeout <bul-label flag="firmware"></bul-label></label>
             <select class="form-control" ng-model="params.timeout" ng-options="lov.key as lov.descr for lov in lovTimeout"></select>
             <p class="help-block">Delay before returning to status page when idle in menus</p>
           </div>      
@@ -130,11 +135,11 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Temperature sensor for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.hardware"></span></label>
+            <label>Temperature sensor for the <strong ng-show="params.extruders == 2">first</strong> hot-end <bul-label flag="hardware"></bul-label></label>
             <select class="form-control" ng-model="params.temp0" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>
           <div class="form-group">
-              <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end <span ng-bind-html="flag.firmware"></span></label>
+              <label>Maximum temperature for the <strong ng-show="params.extruders == 2">first</strong> hot-end <bul-label flag="firmware"></bul-label></label>
             <p class="help-block">Note that this is the absolute maximum. The highest selectable temperature is 15°C lower (So 260°C by default)</p>
             <rzslider rz-slider-model="params.maxtemp0" rz-slider-options="sliderTemp"></rzslider>
             <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp0 >= 300">
@@ -143,11 +148,11 @@
             </div>
           </div>
           <div class="form-group" ng-show="params.extruders == 2">
-            <label>Temperature sensor for the <strong>second</strong> hot-end <span ng-bind-html="flag.hardware"></span></label>
+            <label>Temperature sensor for the <strong>second</strong> hot-end <bul-label flag="hardware"></bul-label></label>
             <select class="form-control" ng-model="params.temp1" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>
           <div class="form-group" ng-show="params.extruders == 2">
-            <label>Maximum temperature for the <strong>second</strong> hot-end <span ng-bind-html="flag.firmware"></span></label>
+            <label>Maximum temperature for the <strong>second</strong> hot-end <bul-label flag="firmware"></bul-label></label>
             <rzslider rz-slider-model="params.maxtemp1" rz-slider-options="sliderTemp"></rzslider>
             <div class="bs-callout bs-callout-warning" ng-show="params.maxtemp1 >= 300">
               <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Warning!</h4>
@@ -155,21 +160,21 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Temperature sensor for the heated bed (if any) <span ng-bind-html="flag.hardware"></span></label>
+            <label>Temperature sensor for the heated bed (if any) <bul-label flag="hardware"></bul-label></label>
             <select class="form-control" ng-model="params.tempBed" ng-options="lov.key as lov.descr for lov in lovSensor"></select>
           </div>   
           <div class="form-group" ng-show="params.tempBed == 20">
-              <label>Temperature control for the heated bed <span ng-bind-html="flag.firmware"></span></label>
+              <label>Temperature control for the heated bed <bul-label flag="firmware"></bul-label></label>
             <select class="form-control" ng-model="params.pidBed" ng-options="lov.key as lov.descr for lov in lovPidBed"></select>
           </div>
           <div class="form-group">
-            <label>Temperature tweaks <span ng-bind-html="flag.firmware"></span> <span class="label label-warning">Experimental</span></label>
+            <label>Temperature tweaks <bul-label flag="firmware"></bul-label> <span class="label label-warning">Experimental</span></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.tweakTemp"
                                        ng-true-value="1"
                                        ng-false-value="0"> Enable temperature tweaks</label>
               <p class="help-block">This feature allows you to override or tweak hot-end and bed temperatures as well as fan speed.<br />
-              So you can print a GCode file with different temperature of fan settings</p>
+              So you can print a GCode file with different temperature or fan settings</p>
             </div>
             <div ng-show="params.tweakTemp == 1">
               <div class="form-group">
@@ -186,17 +191,17 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Fan kickstart <span ng-bind-html="flag.firmware"></span></label>
+            <label>Fan kickstart <bul-label flag="firmware"></bul-label></label>
             <select class="form-control" ng-model="params.fanKick" ng-options="lov.key as lov.descr for lov in lovFanKick"></select>
             <p class="help-block">Activate the fan kickstart option. From Marlin sources: when first starting the main fan, run it at full speed for the given number of milliseconds.  This gets the fan spinning reliably before setting a PWM value.</p>
           </div>
           <div class="form-group">
-            <label>Fan minimum PWM <span ng-bind-html="flag.firmware"></span></label>
+            <label>Fan minimum PWM <bul-label flag="firmware"></bul-label></label>
             <rzslider rz-slider-model="params.fanMinPwm" rz-slider-options="sliderFanMinPwm"></rzslider>
             <p class="help-block">Defines the minimal speed for the main fan, run in PWM mode. This is a PWM value (0-255), not a percentage!</p>
           </div>
           <div class="form-group">
-            <label>Fan PWM <span ng-bind-html="flag.firmware"></span></label>
+            <label>Fan PWM <bul-label flag="firmware"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.fanSlowPwm"
                                        ng-true-value="0"
@@ -205,9 +210,9 @@
             </div>
           </div>
           <div class="form-group" ng-show="params.motherboard == 72">
-            <label>Hot-end fan <span ng-bind-html="flag.hardware"></span></label>
+            <label>Hot-end fan <bul-label flag="hardware"></bul-label></label>
             <p class="help-block">If your UMO+ has an Ultiboard 2.1.4 or newer, the hot-end fan is driven by the hot-end temperature.<br />
-            Check the following option if you have reftrofitted a fan on your hot-end.</p>
+            Check the following option if you have retrofitted a fan on your hot-end.</p>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.e0AutoFan"
                                      ng-true-value="1"
@@ -227,7 +232,7 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Motors <span ng-bind-html="flag.hardware"></span></label>
+            <label>Motors <bul-label flag="hardware"></bul-label></label>
             <p class="help-block">Motor direction might need adjustment in direct drive configuration.<br />
             (Note that inverted X and Z axis is the default configuration on Ultimaker Original!)</p>
             <div class="checkbox">
@@ -257,12 +262,12 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Pulleys <span ng-bind-html="flag.hardware"></span></label>
+            <label>Pulleys <bul-label flag="hardware"></bul-label></label>
             <select class="form-control" ng-model="params.pulleys" ng-options="lov.key as lov.descr for lov in lovPulleys"></select>
             <p class="help-block">If you upgrade the standard MXM pulleys by GT2 ones, don't forget to select this, as they do not have the same diameter!</p>
           </div>      
           <div class="form-group">
-            <label>Filament runout sensor <span ng-bind-html="flag.hardware"></span> <span ng-bind-html="flag.expert"></span></label>
+            <label>Filament runout sensor <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.filRunoutSensor"
                                        ng-true-value="1"
@@ -338,8 +343,8 @@
         <h3>Build log</h3>
         <pre class="pre-scrollable"><code>{{buildLog}}</code></pre>
       </div>
+      <!-- Github link from https://github.com/tholman/github-corners -->
+      <a ng-href="https://github.com/AmedeeBulle/Bultimaker{{(info.experimental === 1) ? '/tree/experimental' : ''}}" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" ng-attr-style="fill:{{(info.experimental === 1) ? '#f0ad4e' : '#5bc0de'}}; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
     </div>
-    <!-- Github link from https://github.com/tholman/github-corners -->
-    <a href="https://github.com/AmedeeBulle/Bultimaker" class="github-corner" aria-label="View source on Github"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#5bc0de; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
   </body>
 </html>

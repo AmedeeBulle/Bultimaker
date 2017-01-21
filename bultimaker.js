@@ -137,7 +137,7 @@ bultimakerApp.component('bulLabel', {
   }
 });
 
-bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($scope, umoFactory) {
+bultimakerApp.controller('bultimakerCtrl', ['$scope', '$timeout', 'umoFactory', function ($scope, $timeout, umoFactory) {
   "use strict";
 
   // List of values
@@ -270,6 +270,11 @@ bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($s
       return value + suffix;
     }
   };
+  $scope.refreshSlider = function () {
+    $timeout(function () {
+      $scope.$broadcast('rzSliderForceRender');
+    });
+  };
   // Buttons state and fields initialization
   $scope.disableCompile = false;
   $scope.disableDownload = true;
@@ -340,4 +345,7 @@ bultimakerApp.controller('bultimakerCtrl', ['$scope', 'umoFactory', function ($s
   $scope.umSelected = function () {
     $scope.params = angular.extend({}, umoFactory.getParams(), $scope.umSelect.buildParams);
   };
+
+  // Ensure sliders are rendered (Safari)
+  $scope.refreshSlider();
 }]);

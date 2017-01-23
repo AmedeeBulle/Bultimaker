@@ -111,7 +111,9 @@ switch ($data['cmd']) {
       ' INVERT_Z_DIR='        . ($data['invertZ'] == 0 ? 'false' : 'true') .
       ' INVERT_E0_DIR='       . ($data['invertE0'] == 0 ? 'false' : 'true') .
       ' INVERT_E1_DIR='       . ($data['invertE1'] == 0 ? 'false' : 'true') .
-      ' LANGUAGE_CHOICE='     . $data['language']
+      ' LANGUAGE_CHOICE='     . $data['language'] .
+      ' Z_HOME_DIR='          . $data['zHomeDir'] .
+      ' Z_HOME_RETRACT_MM='   . $data['zHomeRetract']
       ;
     if ($data['target'] == 'HBK') {
       $cmd .= ' ULTIMAKER_HBK';
@@ -166,6 +168,15 @@ switch ($data['cmd']) {
     }
     if ($data['tweakTemp'] == 1) {
       $cmd .= ' TWEAK_TEMP TWEAK_MAX_OFFSET=' . $data['tweakMaxOffset'];
+    }
+    if ($data['softEndstops'] == 1) {
+      $cmd .= ' SOFT_ENDSTOPS';
+    }
+    if ($data['zMinInvert'] == 0) {
+      $cmd .= ' Z_MIN_INVERT=false';
+    }
+    if ($data['softZAlign'] == 1) {
+      $cmd .= ' SOFT_Z_ALIGN';
     }
     // Close defines
     $cmd .= '" ';

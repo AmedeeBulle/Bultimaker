@@ -296,6 +296,63 @@
           </div>
         </div>
       </div>
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <h3 class="panel-title">Z-stage</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label>Z stage Home switch <bul-label flag="hardware"></bul-label> <bul-label flag="experimental"></bul-label></label>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="params.zMinInvert" value="1"> <em>Normally Open</em> (NO) switch (Default)
+              </label>
+            </div>
+            <div class="radio">
+              <label>
+                <input type="radio" ng-model="params.zMinInvert" value="0"> <em>Normally Closed</em> (NC) switch
+              </label>
+            </div>
+            <p class="help-block">Ultimaker uses <em>Normally Open</em> (NO) switches for the endstops. Use this option if you use a <em>Normally Closed</em> (NC) switch for the Z stage.</p>
+          </div>
+          <div class="form-group" ng-show="params.target == 'UMO'">
+            <label>Software endstops <bul-label flag="firmware"></bul-label> <bul-label flag="experimental"></bul-label></label>
+            <div class="checkbox">
+              <label><input type="checkbox" ng-model="params.softEndstops"
+                                       ng-true-value="1"
+                                       ng-false-value="0"> Software endstops</label>
+              <p class="help-block">With software endstops the limit switches are only used for homing. This option is required for the <em>software bed leveling</em> option (see below)</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Software bed leveling <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
+            <div class="checkbox">
+              <label><input type="checkbox" ng-model="params.softZAlign"
+                                       ng-true-value="1"
+                                       ng-false-value="0"
+                                       ng-change="softZAlignChanged()"> Software bed leveling</label>
+              <p class="help-block">With software bed leveling you can adjust your bed level in the same way the Ultimaker2 does. This is only possible if you either home the Z stage at the bottom (Like the UM2 does) or you replace the top switch by a switch/sensor which allows you to home <strong>under</strong> the zero position.</p>
+            </div>
+            <div ng-show="params.softZAlign">
+              <label>Z switch location <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="params.zHomeDir" value="-1"> Z homing at the top (Default)
+                </label>
+              </div>
+              <div class="radio">
+                <label>
+                  <input type="radio" ng-model="params.zHomeDir" value="1"> Z homing at the bottom (Custom, see <a href="https://www.youmagine.com/designs/new-z-endstop-limit-location-for-calibration-a-la-um2-on-umo">New Z endstop/limit location</a>)
+                </label>
+              </div>
+              <label>Z home retract <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>              
+              <rzslider rz-slider-model="params.zHomeRetract" rz-slider-options="sliderZRetract"></rzslider>
+              <p class="help-block">Homing hits the endstop, then retracts by this distance, before it tries to slowly bump again. 
+                If Z homing is done at the top but under zero the retract parameter must be high enough to ensure it retracts under the switch/sensor.</p>
+            </div>
+          </div>
+        </div>
+      </div>
       <h2>Build Firmware</h2>
       <div class="row">
         <div class="col-sm-6">

@@ -32,7 +32,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
         label: 'Ultimaker Original with HBK',
         buildParams: {
           target:       'HBK',
-          tempBed:      20        // Heated bed is PT100
+          tempBed:      20,       // Heated bed is PT100
+          softEndstops: 1         // Software endstops
         }
       },
       {
@@ -43,7 +44,8 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
           temp0:        20,         // Extruder is PT100
           temp1:        20,         // 2nd extruder if any is PT100
           tempBed:      20,         // Heated bed is PT100
-          frsPin:       13          // Pin for the sensor
+          frsPin:       13,         // Pin for the sensor
+          softEndstops: 1           // Software endstops
         }
       }
     ],
@@ -81,7 +83,12 @@ bultimakerApp.factory('umoFactory', ['$http', function ($http) {
       e0AutoFan:      0,              // Extruder0 Auto Fan
       e1AutoFan:      0,              // Extruder1 Auto Fan
       tweakTemp:      0,              // Tweak temp feature
-      tweakMaxOffset: 50              // Max temperature offset for tweaks
+      tweakMaxOffset: 50,             // Max temperature offset for tweaks
+      zMinInvert:     1,              // Invert Z endstop logic (1 is NO)
+      softEndstops:   0,              // Software endstops
+      softZAlign:     0,              // Software Z alignment (à la UM2)
+      zHomeDir:       -1,             // Z Home is at Min Z
+      zHomeRetract:   2               // Retraction distance before slow homing
     };
 
   // Returns available profiles
@@ -270,10 +277,30 @@ bultimakerApp.controller('bultimakerCtrl', ['$scope', '$timeout', 'umoFactory', 
       return value + suffix;
     }
   };
+  $scope.sliderZRetract = {
+    floor: 0,
+    minLimit: 2,
+    ceil: 30,
+    step: 1,
+    showTicks: 5,
+    translate: function (value) {
+      var suffix = 'mm';
+      if (value === 2) {
+        suffix += ' (Default)';
+      }
+      return value + suffix;
+    }
+  };
   $scope.refreshSlider = function () {
     $timeout(function () {
       $scope.$broadcast('rzSliderForceRender');
     });
+  };
+  $scope.softZAlignChanged = function () {
+    if ($scope.params.softZAlign === 1) {
+      $scope.refreshSlider();
+      $scope.params.softEndstops = 1;
+    }
   };
   // Buttons state and fields initialization
   $scope.disableCompile = false;

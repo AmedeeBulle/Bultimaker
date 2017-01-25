@@ -325,15 +325,23 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Software bed leveling <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
+            <label>Software adjustable bed leveling <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.softZAlign"
                                        ng-true-value="1"
                                        ng-false-value="0"
                                        ng-change="softZAlignChanged()"> Software bed leveling</label>
-              <p class="help-block">With software bed leveling you can adjust your bed level in the same way the Ultimaker2 does. This is only possible if you either home the Z stage at the bottom (Like the UM2 does) or you replace the top switch by a switch/sensor which allows you to home <strong>under</strong> the zero position.</p>
+              <p class="help-block">With the software adjustable bed leveling you can adjust your bed level in the same way the Ultimaker2 does. This is only possible if you either home the Z stage at the bottom (Like the UM2 does) or you replace the top switch by a switch/sensor which allows you to home <strong>under</strong> the zero position.</p>
             </div>
             <div ng-show="params.softZAlign">
+                <div class="help-block">
+                  <p><strong>Important</strong>: this feature is a user interface for the <a href="http://reprap.org/wiki/G-code#M206:_Offset_axes">M206</a> G-code command (Offset axes).<br />
+                    The Z-offset value is saved in EEPROM and <strong>will remain active</strong> even when you install another firmware.<br />
+                  If you want to go back to a firmware without software adjustable bed leveling, reset the offset before flashing a newer firmware. Alternatively you can issue the following G-code with your new firmware: </p>
+                  <code>M206 Z0 ; Reset Z-Offset</code><br />
+                  <code>M500 &nbsp;&nbsp;&nbsp;; Save to EEPROM</code>
+                  <p>(<em>Restore failsafe</em> on the controller will also reset the offset, but then you will also loose any other parameter previously saved)</p>
+                </div>
               <label>Z switch location <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
               <div class="radio">
                 <label>

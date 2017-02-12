@@ -22,11 +22,14 @@
   </head>
   <body ng-app="bultimakerApp">
     <div class="container-fluid bg-primary">
-      <h1>Bul<small class="bg-primary">le</small>timaker: Build Ultimaker firmware</h1>
+      <h1>bUltimaker: Build Ultimaker firmware</h1>
       <p>Online firmware compiler for your Ultimaker Original printer</p>
     </div>
-    
     <div ng-controller="bultimakerCtrl" class="container">
+      <h2>About bUltimaker</h2>
+        <p>bUltimaker helps you generate a tailored firmware for your Ultimaker Original/Original+ printer.<br />
+          The main objective is to provide a firmware <em>as close as possible</em> to the official firmware distributed by Ultimaker, the only differences being the selected features.<br />
+          The primary focus is on stability and compatibility with the official Ultimaker firmware.</p>
       <div class="container-fluid bs-callout bs-callout-warning" ng-show="info.experimental === 1">
         <h4><span class="glyphicon glyphicon-exclamation-sign"></span> Experimental branch</h4>
         <p>You are using the experimental branches of the builder and the firmware.</p>
@@ -49,6 +52,21 @@
           </ul>
         </div>
       </div>
+      <div class="container-fluid bs-callout bs-callout-info">
+        <h4><span class="glyphicon glyphicon-info-sign"></span> Differences from the official Ultimaker firmware</h4>
+        <p>Although this firmware is very close to the official Ultimaker firmware, there are a few differences even if you do not select any option:</p>
+        <ul>
+          <li>[UMO+] Control LED brightness from the controller, can be saved in EEPROM;</li>
+          <li>[UMO+] Stepper motor current adjustable from the controller, saved in EEPROM;</li>
+          <li>[UMO/UMO+] Better display of special characters (umluats, ...) in SD-card file names (within the limits of what the display can do!);</li>
+          <li>[UMO/UMO+] Bug fixes -- see
+            <a href="https://github.com/AmedeeBulle/Marlin/blob/Marlin_UMO_Unified{{(info.experimental === 1) ? '_Experimental' : ''}}/README.md">Readme</a>
+            and
+            <a href="https://github.com/AmedeeBulle/Marlin/commits/Marlin_UMO_Unified{{(info.experimental === 1) ? '_Experimental' : ''}}">Commits log</a>
+            on Github for details!</li>
+        </ul>
+      </div>
+
       <h2>Extra configuration</h2>
       <p class="text-info">Changing something in this section will generate alternative Ultimaker Firmware for your {{umSelect.label}} (as distributed with Cura)</p>
       <div class="checkbox">
@@ -70,6 +88,7 @@
         This firmware may not run on your {{umSelect.label}} if you select a wrong hardware component!</p>
         <p>Features are grouped by topic of interrest (Controller, Fans, ...) and typically have an information label:</p>
         <ul>
+          <li><bul-label flag="news"></bul-label> New feature in this release.</li>
           <li><bul-label flag="firmware"></bul-label> Firmware-only enhancement.<br />
             Changing firmware-only settings won't fundamentally break anything, feel free to make changes and customize  the firmware to suit your needs.</li>
           <li><bul-label flag="hardware"></bul-label> Feature linked to hardware component(s).<br />
@@ -169,7 +188,7 @@
             <select class="form-control" ng-model="params.pidBed" ng-options="lov.key as lov.descr for lov in lovPidBed"></select>
           </div>
           <div class="form-group">
-            <label>Temperature tweaks <bul-label flag="firmware"></bul-label> <span class="label label-warning">Experimental</span></label>
+            <label>Temperature tweaks <bul-label flag="firmware"></bul-label> <bul-label flag="news"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.tweakTemp"
                                        ng-true-value="1"
@@ -302,7 +321,7 @@
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label>Z stage Home switch <bul-label flag="hardware"></bul-label> <bul-label flag="experimental"></bul-label></label>
+            <label>Z stage Home switch <bul-label flag="hardware"></bul-label> <bul-label flag="news"></bul-label></label>
             <div class="radio">
               <label>
                 <input type="radio" ng-model="params.zMinInvert" value="1"> <em>Normally Open</em> (NO) switch (Default)
@@ -316,7 +335,7 @@
             <p class="help-block">Ultimaker uses <em>Normally Open</em> (NO) switches for the endstops. Use this option if you use a <em>Normally Closed</em> (NC) switch for the Z stage.</p>
           </div>
           <div class="form-group" ng-show="params.target == 'UMO'">
-            <label>Software endstops <bul-label flag="firmware"></bul-label> <bul-label flag="experimental"></bul-label></label>
+            <label>Software endstops <bul-label flag="firmware"></bul-label> <bul-label flag="news"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.softEndstops"
                                        ng-true-value="1"
@@ -325,13 +344,14 @@
             </div>
           </div>
           <div class="form-group">
-            <label>Software adjustable bed leveling <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
+            <label>Software adjustable bed leveling <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="news"></bul-label></label>
             <div class="checkbox">
               <label><input type="checkbox" ng-model="params.softZAlign"
                                        ng-true-value="1"
                                        ng-false-value="0"
                                        ng-change="softZAlignChanged()"> Software bed leveling</label>
-              <p class="help-block">With the software adjustable bed leveling you can adjust your bed level in the same way the Ultimaker2 does. This is only possible if you either home the Z stage at the bottom (Like the UM2 does) or you replace the top switch by a switch/sensor which allows you to home <strong>under</strong> the zero position.</p>
+              <p class="help-block">With the software adjustable bed leveling you can adjust your bed level in the same way the Ultimaker2 does. This is only possible if you either home the Z stage at the bottom (Like the UM2 does) or you replace the top switch by a switch/sensor which allows you to home <strong>under</strong> the zero position.<br/>
+              More information in <a href="https://youtu.be/cqELGTssb6M">this video</a> </p>
             </div>
             <div ng-show="params.softZAlign">
                 <div class="help-block">
@@ -342,10 +362,10 @@
                   <code>M500 &nbsp;&nbsp;&nbsp;; Save to EEPROM</code>
                   <p>(<em>Restore failsafe</em> on the controller will also reset the offset, but then you will also loose any other parameter previously saved)</p>
                 </div>
-              <label>Z switch location <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>
+              <label>Z switch location <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label></label>
               <div class="radio">
                 <label>
-                  <input type="radio" ng-model="params.zHomeDir" value="-1"> Z homing at the top (Default)
+                  <input type="radio" ng-model="params.zHomeDir" value="-1"> Z homing at the top (Default, see <a href="https://www.youmagine.com/designs/software-adjustable-bed-leveling-on-umo">Software adjustable bed leveling on UMO</a>)
                 </label>
               </div>
               <div class="radio">
@@ -353,7 +373,7 @@
                   <input type="radio" ng-model="params.zHomeDir" value="1"> Z homing at the bottom (Custom, see <a href="https://www.youmagine.com/designs/new-z-endstop-limit-location-for-calibration-a-la-um2-on-umo">New Z endstop/limit location</a>)
                 </label>
               </div>
-              <label>Z home retract <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label> <bul-label flag="wip"></bul-label></label>              
+              <label>Z home retract <bul-label flag="hardware"></bul-label> <bul-label flag="expert"></bul-label></label>
               <rzslider rz-slider-model="params.zHomeRetract" rz-slider-options="sliderZRetract"></rzslider>
               <p class="help-block">Homing hits the endstop, then retracts by this distance, before it tries to slowly bump again. 
                 If Z homing is done at the top but under zero the retract parameter must be high enough to ensure it retracts under the switch/sensor.</p>

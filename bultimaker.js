@@ -125,6 +125,7 @@ bultimakerApp.component('bulLabel', {
   controller: function () {
     "use strict";
     var flags = {
+      news:         ['primary', 'eye-open',         'New'],
       firmware:     ['info',    'sunglasses',       'Firmware'],
       hardware:     ['info',    'wrench',           'Hardware'],
       expert:       ['info',    'education',        'Expert'],
